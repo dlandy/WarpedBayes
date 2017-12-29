@@ -2,8 +2,7 @@
 % Please edit documentation in R/PsiFunctions.R
 \name{psiLinear}
 \alias{psiLinear}
-\title{psiLinear
-Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism}
+\title{psiLinear}
 \usage{
 psiLinear(stimuli, shift = 0, scaling = 1)
 }
@@ -14,7 +13,6 @@ psiLinear(stimuli, shift = 0, scaling = 1)
 a vector containing warped stimuli
 }
 \description{
-psiLinear
 Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism
 }
 \examples{
