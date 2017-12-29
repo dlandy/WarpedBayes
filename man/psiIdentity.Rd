@@ -4,25 +4,39 @@
 \alias{psiIdentity}
 \title{psiIdentity}
 \usage{
-psiIdentity(stimuli)
+psiIdentity(warpedStimuli)
+
+psiIdentity(warpedStimuli)
 }
 \arguments{
+\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
+
 \item{stimuli}{a vector of stimuli, between -inf and inf}
 }
 \value{
 a vector containing "warped" stimuli identical to the original stimuli
+
+a vector containing "unwarped" stimuli identical to the warped stimuli
 }
 \description{
 This function is a generic transformation function that does no conversion at all. 
 It's really just here for testing things out.
 It is equivalent to calling psiLinear with default parameters
+
+This function is a generic transformation function that does no conversion at all. 
+It is the inverse of psiIdentity.
+It's really just here for testing things out.
+It is equivalent to calling psiLinearInverse with default parameters
 }
 \examples{
 psiIdentity(-10:10)
+psiIdentity(-10:10)
 }
 \seealso{
-psiIdentity, psiLogOdds, psiPrelec, psiLog
+psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
+
+psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentity
 }
 \keyword{perceptual}
-\keyword{psi,}
+\keyword{psi}
 \keyword{tranformations}

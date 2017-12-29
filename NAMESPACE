@@ -2,3 +2,7 @@
 
 export(psiIdentity)
 export(psiLinear)
+export(psiLinearInverse)
+export(psiLog)
+export(psiLogInverse)
+export(psiLogOdds)
