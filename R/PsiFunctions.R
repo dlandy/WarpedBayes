@@ -22,7 +22,7 @@ psiLinear <- function (x, ...) {
 }
 
 
-psiLinear.vector <- function(stimuli, shift=0, scaling=1){
+psiLinear.double <- function(stimuli, shift=0, scaling=1){
     stimuli*scaling + shift
 }
 
