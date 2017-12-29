@@ -4,17 +4,17 @@
 \alias{psiLinear}
 \title{psiLinear}
 \usage{
-psiLinear(stimuli, shift = 0, scaling = 1)
+psiLinear(x, ...)
 }
 \arguments{
-\item{stimuli}{a vector of stimuli, between -inf and inf}
+\item{stimuli}{a vector of stimuli, between -inf and inf, or a list of vectors of stimuli}
 
-\item{shift}{A scalar by which to (positively) offset the scaled values}
+\item{shift}{A scalar by which to (positively) offset the scaled values, or a list or vector of scalars}
 
-\item{scaling}{A scalar multiplier to the (unshifted) values}
+\item{scaling}{A scalar multiplier to the (unshifted) values, or a list or vector of scalars}
 }
 \value{
-A vector containing warped stimuli
+A vector containing warped stimuli, or a list of vectors
 }
 \description{
 Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism

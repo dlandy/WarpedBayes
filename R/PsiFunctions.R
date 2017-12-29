@@ -5,10 +5,10 @@
 #' psiLinear
 #' 
 #' Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism
-#' @param stimuli a vector of stimuli, between -inf and inf
-#' @param shift A scalar by which to (positively) offset the scaled values
-#' @param scaling A scalar multiplier to the (unshifted) values
-#' @return A vector containing warped stimuli
+#' @param stimuli a vector of stimuli, between -inf and inf, or a list of vectors of stimuli
+#' @param shift A scalar by which to (positively) offset the scaled values, or a list or vector of scalars
+#' @param scaling A scalar multiplier to the (unshifted) values, or a list or vector of scalars
+#' @return A vector containing warped stimuli, or a list of vectors
 #' @keywords psi perceptual tranformations
 #' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
 #' @export
@@ -17,9 +17,19 @@
 #' psiLinear(-10:10)
 #' psiLinear(-10:10, shift=10, scaling=2)
 #' -10:10 %>% psiLinear(shift=2, scaling=0.5)
-psiLinear <- function(stimuli, shift=0, scaling=1){
-  stimuli*scaling + shift
+psiLinear <- function (x, ...) {
+  UseMethod("psiLinear", x)
 }
+
+
+psiLinear.vector <- function(stimuli, shift=0, scaling=1){
+    stimuli*scaling + shift
+}
+
+psiLinear.list <- function(stimuli, shift=0, scaling=1){
+    mapply("+", mapply("*", stimuli, scaling, SIMPLIFY = FALSE), shift, SIMPLIFY=FALSE)
+}
+  
 
 #' psiIdentity
 #' 
@@ -161,12 +171,18 @@ psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
 #' @examples
 #' psiLogOdds(1:100/100)
 #' 0:1000/1000 %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOdds <- function(stimuli, smallValue=10^-5){
-  stimuli[stimuli==1] <- 1-smallValue
-  stimuli[stimuli==0] <- smallValue
-  d <- log(stimuli/(1-stimuli))
+psiLogOddsInverse <- function(warpedStimuli, smallValue=10^-5){
+  e <- exp(warpedStimuli)
+  d <- e/(1+e)
   d
 }
+
+
+
+# MULTICYCLING
+
+# Multicycling is an advanced art.  Basically, we 'multicycle' by a pair of functions and inverses 
+# that carve spaces into regions that are already bounded at lynchpin points.  These can include 'inf' and '-inf'
 
 
 

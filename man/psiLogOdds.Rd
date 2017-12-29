@@ -5,21 +5,13 @@
 \title{psiLogOdds}
 \usage{
 psiLogOdds(stimuli, smallValue = 10^-5)
-
-psiLogOdds(stimuli, smallValue = 10^-5)
 }
 \arguments{
 \item{stimuli}{a vector of positive stimuli, between 0 and inf}
 
 \item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses}
-
-\item{stimuli}{a vector of positive stimuli, between 0 and inf}
-
-\item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set}
 }
 \value{
-a vector containing "warped" stimuli identical to the original stimuli
-
 a vector containing "warped" stimuli identical to the original stimuli
 }
 \description{
@@ -27,21 +19,12 @@ This function is a transformation function that takes the log odds
 By design, it is robust to the inclusion of the occasional 0,
 which it maps to a very small value, which can optionally be specified
 It's appropriate for mapping (0, 1):-> (-inf, inf).
-
-This function is a transformation function that inverts the log odds
-It's appropriate for mapping (-inf, inf) :->  (0, 1)
-As in all functions in this package, the parameters are set so that applying the same parameters to the main function 
-and the inverse yields an identity.
 }
 \examples{
 psiLogOdds(1:100/100)
 0:1000/1000 \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOdds(1:100/100)
-0:1000/1000 \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 }
 \seealso{
-psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
-
 psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
 }
 \keyword{perceptual}
