@@ -4,7 +4,7 @@
 \alias{psiLinearInverse}
 \title{psiLinearInverse}
 \usage{
-psiLinearInverse(warpedStimuli, shift = 0, scaling = 1)
+psiLinearInverse(x, ...)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}

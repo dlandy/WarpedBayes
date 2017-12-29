@@ -21,15 +21,13 @@ psiLinear <- function (x, ...) {
   UseMethod("psiLinear", x)
 }
 
-
-psiLinear.double <- function(stimuli, shift=0, scaling=1){
-    stimuli*scaling + shift
-}
-
 psiLinear.list <- function(stimuli, shift=0, scaling=1){
-    mapply("+", mapply("*", stimuli, scaling, SIMPLIFY = FALSE), shift, SIMPLIFY=FALSE)
+    mapply(psiLinear, stimuli, shift, scaling, SIMPLIFY=FALSE)
 }
-  
+
+psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
+  stimuli*scaling + shift
+}  
 
 #' psiIdentity
 #' 
@@ -43,7 +41,14 @@ psiLinear.list <- function(stimuli, shift=0, scaling=1){
 #' @export
 #' @examples
 #' psiIdentity(-10:10)
-psiIdentity <- function(stimuli){
+psiIdentity <- function (x, ...) {
+  UseMethod("psiIdentity", x)
+}
+psiIdentity.list <- function(stimuli){
+  mapply(psiIdentity, stimuli, SIMPLIFY=FALSE)
+}
+
+psiIdentity.numeric <- function(stimuli){
   stimuli
 }
 
@@ -64,8 +69,13 @@ psiIdentity <- function(stimuli){
 #' psiLog(1:100)
 #' 1:100 %>% psiLog()
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
-
-psiLog <- function(stimuli, smallValue=10^-5){
+psiLog <- function (x, ...) {
+  UseMethod("psiLog", x)
+}
+psiLog.list <- function(stimuli, smallValue){
+  mapply(psiLog, stimuli, smallValue, SIMPLIFY=FALSE)
+}
+psiLog.numeric <- function(stimuli, smallValue=10^-5){
   stimuli[stimuli==0] <- smallValue
   log(stimuli)
 }
@@ -85,7 +95,14 @@ psiLog <- function(stimuli, smallValue=10^-5){
 #' @examples
 #' psiLogOdds(1:100/100)
 #' 0:1000/1000 %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOdds <- function(stimuli, smallValue=10^-5){
+psiLogOdds <- function (x, ...) {
+  UseMethod("psiLogOdds", x)
+}
+psiLogOdds.list <- function(stimuli, smallValue){
+  mapply(psiLogOdds, stimuli, smallValue, SIMPLIFY=FALSE)
+}
+
+psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
   stimuli[stimuli==1] <- 1-smallValue
   stimuli[stimuli==0] <- smallValue
   d <- log(stimuli/(1-stimuli))
@@ -110,8 +127,15 @@ psiLogOdds <- function(stimuli, smallValue=10^-5){
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentity
 #' @export
 #' @examples
-#' psiIdentity(-10:10)
-psiIdentity <- function(warpedStimuli){
+#' psiIdentityInverse(-10:10)
+psiIdentityInverse <- function (x, ...) {
+UseMethod("psiIdentityInverse", x)
+}
+psiIdentityInverse.list <- function(warpedStimuli){
+  mapply(psiIdentityInverse, warpedStimuli, SIMPLIFY=FALSE)
+}
+
+psiIdentityInverse.numeric <- function(warpedStimuli){
   warpedStimuli
 }
 
@@ -130,7 +154,14 @@ psiIdentity <- function(warpedStimuli){
 #' psiLinear(-10:10)
 #' psiLinear(-10:10, shift=10, scaling=2)
 #' -10:10 %>% psiLinear(shift=2, scaling=0.5)
-psiLinearInverse <- function(warpedStimuli, shift=0, scaling=1){
+psiLinearInverse <- function (x, ...) {
+  UseMethod("psiLinearInverse", x)
+}
+psiLinearInverse.list <- function(warpedStimuli){
+  mapply(psiLinearInverse, warpedStimuli, SIMPLIFY=FALSE)
+}
+
+psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
   (warpedStimuli-shift)/scaling 
 }
 
@@ -150,6 +181,12 @@ psiLinearInverse <- function(warpedStimuli, shift=0, scaling=1){
 #' psiLogInverse(psiLog(1:100)) # returns 1:100
 #' psiLog(1:100) %>% psiLogInverse()
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
+psiLogInverse <- function (x, ...) {
+  UseMethod("psiLogInverse", x)
+}
+psiLogInverse.list <- function(warpedStimuli, smallValue=10^-5){
+  mapply(psiLogInverse, warpedStimuli, smallValue, SIMPLIFY=FALSE)
+}
 
 psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
   exp(warpedStimuli)
@@ -171,7 +208,14 @@ psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
 #' @examples
 #' psiLogOdds(1:100/100)
 #' 0:1000/1000 %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOddsInverse <- function(warpedStimuli, smallValue=10^-5){
+psiLogOddsInverse <- function (x, ...) {
+  UseMethod("psiLogOddsInverse", x)
+}
+psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
+  mapply(psiLogOddsInverse, warpedStimuli, smallValue, SIMPLIFY=FALSE)
+}
+
+psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
   e <- exp(warpedStimuli)
   d <- e/(1+e)
   d
