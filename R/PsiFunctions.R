@@ -216,7 +216,7 @@ psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
 }
 
 psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
-  e <- exp(warpedStimuli)
+  e <- exp(warpedStimuli) 
   d <- e/(1+e)
   d
 }
