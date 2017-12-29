@@ -9,13 +9,13 @@
 #' @param responses an optional vector of responses. If responses are given, the return value is the 
 #' @return A vector containing mean stimulus locations
 #' @keywords bayesianInference
-#' @seealso 
+#' @seealso vanillaBayes
 #' @export
 #' @examples
 #' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes(kappa=5) %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
 
-
+ 
 
 vanillaBayes <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
