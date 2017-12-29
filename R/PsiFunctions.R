@@ -46,10 +46,13 @@ psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
 psiIdentity <- function (x, ...) {
   UseMethod("psiIdentity", x)
 }
+
+#' @export
 psiIdentity.list <- function(stimuli){
   mapply(psiIdentity, stimuli, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiIdentity.numeric <- function(stimuli){
   stimuli
 }
@@ -74,9 +77,13 @@ psiIdentity.numeric <- function(stimuli){
 psiLog <- function (x, ...) {
   UseMethod("psiLog", x)
 }
+
+#' @export
 psiLog.list <- function(stimuli, smallValue){
   mapply(psiLog, stimuli, smallValue, SIMPLIFY=FALSE)
 }
+
+#' @export
 psiLog.numeric <- function(stimuli, smallValue=10^-5){
   stimuli[stimuli==0] <- smallValue
   log(stimuli)
@@ -100,10 +107,13 @@ psiLog.numeric <- function(stimuli, smallValue=10^-5){
 psiLogOdds <- function (x, ...) {
   UseMethod("psiLogOdds", x)
 }
+
+#' @export
 psiLogOdds.list <- function(stimuli, smallValue){
   mapply(psiLogOdds, stimuli, smallValue, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
   stimuli[stimuli==1] <- 1-smallValue
   stimuli[stimuli==0] <- smallValue
@@ -133,10 +143,13 @@ psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
 psiIdentityInverse <- function (x, ...) {
 UseMethod("psiIdentityInverse", x)
 }
+
+#' @export
 psiIdentityInverse.list <- function(warpedStimuli){
   mapply(psiIdentityInverse, warpedStimuli, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiIdentityInverse.numeric <- function(warpedStimuli){
   warpedStimuli
 }
@@ -159,10 +172,13 @@ psiIdentityInverse.numeric <- function(warpedStimuli){
 psiLinearInverse <- function (x, ...) {
   UseMethod("psiLinearInverse", x)
 }
+
+#' @export
 psiLinearInverse.list <- function(warpedStimuli){
   mapply(psiLinearInverse, warpedStimuli, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
   (warpedStimuli-shift)/scaling 
 }
@@ -186,10 +202,13 @@ psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
 psiLogInverse <- function (x, ...) {
   UseMethod("psiLogInverse", x)
 }
+
+#' @export
 psiLogInverse.list <- function(warpedStimuli, smallValue=10^-5){
   mapply(psiLogInverse, warpedStimuli, smallValue, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
   exp(warpedStimuli)
 }
@@ -213,10 +232,13 @@ psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
 psiLogOddsInverse <- function (x, ...) {
   UseMethod("psiLogOddsInverse", x)
 }
+
+#' @export
 psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
   mapply(psiLogOddsInverse, warpedStimuli, smallValue, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
   e <- exp(warpedStimuli) 
   d <- e/(1+e)
