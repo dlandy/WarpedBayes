@@ -17,8 +17,8 @@
 
 
 
-VanillaBayes <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
-  predictions = VanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
+vanillaBayes <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+  predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
   if(responses=="none"){
     predictions
@@ -29,7 +29,7 @@ VanillaBayes <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, response
 }
 
 #' @export
-VanillaBayes.predictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
+vanillaBayes.predictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
   tauIntegration = tauStimuli + tauCategory
   beta <- tauStimuli/tauIntegration
   beta*stimuli + (1-beta)*kappa
