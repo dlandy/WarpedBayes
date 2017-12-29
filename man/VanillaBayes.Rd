@@ -2,7 +2,7 @@
 % Please edit documentation in R/VanillaBayes.R
 \name{vanillaBayes}
 \alias{vanillaBayes}
-\title{VanillaBayes}
+\title{vanillaBayes}
 \usage{
 vanillaBayes(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
   responses = "none")

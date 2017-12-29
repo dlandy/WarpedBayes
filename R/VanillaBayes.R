@@ -1,5 +1,5 @@
 
-#' VanillaBayes
+#' vanillaBayes
 #' 
 #' Performs vanilla bayes (single category) on a set of stimuli
 #' @param stimuli a vector of stimuli, between -inf and inf
