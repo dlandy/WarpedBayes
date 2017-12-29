@@ -2,7 +2,10 @@
 % Please edit documentation in R/PsiFunctions.R
 \name{psiIdentity}
 \alias{psiIdentity}
-\title{psiIdentity}
+\title{psiIdentity
+This function is a generic transformation function that does no conversion at all. 
+It's really just here for testing things out.
+It is equivalent to calling psiLinear with default parameters}
 \usage{
 psiIdentity(stimuli)
 }
@@ -13,6 +16,7 @@ psiIdentity(stimuli)
 a vector containing "warped" stimuli identical to the original stimuli
 }
 \description{
+psiIdentity
 This function is a generic transformation function that does no conversion at all. 
 It's really just here for testing things out.
 It is equivalent to calling psiLinear with default parameters

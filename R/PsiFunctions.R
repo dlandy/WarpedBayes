@@ -3,7 +3,6 @@
 # psiNameInverse <- function(unboundedSpace, parameters matching psiName)
 
 #' psiLinear
-#' 
 #' Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism
 #' @param stimuli a vector of stimuli, between -inf and inf
 #' @return a vector containing warped stimuli
@@ -21,7 +20,6 @@ psiLinear <- function(stimuli, shift=0, scaling=1){
 
 
 #' psiIdentity
-#' 
 #' This function is a generic transformation function that does no conversion at all. 
 #' It's really just here for testing things out.
 #' It is equivalent to calling psiLinear with default parameters
