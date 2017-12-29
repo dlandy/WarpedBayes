@@ -228,7 +228,7 @@ psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' psiLogOdds(1:100/100)
-#' 0:1000/1000 %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+#' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 psiLogOddsInverse <- function (x, ...) {
   UseMethod("psiLogOddsInverse", x)
 }

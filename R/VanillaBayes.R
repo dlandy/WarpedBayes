@@ -1,17 +1,37 @@
 
-#' psiLinear
+#' VanillaBayes
 #' 
-#' Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism
+#' Performs vanilla bayes (single category) on a set of stimuli
 #' @param stimuli a vector of stimuli, between -inf and inf
-#' @param shift A scalar by which to (positively) offset the scaled values
-#' @param scaling A scalar multiplier to the (unshifted) values
-#' @return A vector containing warped stimuli
-#' @keywords psi perceptual tranformations
-#' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
+#' @param kappa The location of the category
+#' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
+#' @param tauCategory The precision of the category distribution
+#' @param responses an optional vector of responses. If responses are given, the return value is the 
+#' @return A vector containing mean stimulus locations
+#' @keywords bayesianInference
+#' @seealso 
 #' @export
 #' @examples
-#' psiLinear(c(0.1, 0.2, 0.3))
-#' psiLinear(-10:10)
-#' psiLinear(-10:10, shift=10, scaling=2)
-#' -10:10 %>% psiLinear(shift=2, scaling=0.5)
+#' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes(kappa=5) %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+#' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
+
+
+
+VanillaBayes <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+  predictions = VanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
+  tauIntegration = tauStimuli + tauCategory
+  if(responses=="none"){
+    predictions
+  } else {
+    if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative
+    0-sum(log(dnorm(predictions-responses, sd=tauIntegration))) # Bad Normal Assumption
+  }
+}
+
+#' @export
+VanillaBayes.predictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
+  tauIntegration = tauStimuli + tauCategory
+  beta <- tauStimuli/tauIntegration
+  beta*stimuli + (1-beta)*kappa
+}
 

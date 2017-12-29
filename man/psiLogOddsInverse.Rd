@@ -22,7 +22,7 @@ and the inverse yields an identity.
 }
 \examples{
 psiLogOdds(1:100/100)
-0:1000/1000 \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+(0:1000/1000) \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 }
 \seealso{
 psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
