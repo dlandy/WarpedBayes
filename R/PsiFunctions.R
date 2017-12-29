@@ -194,7 +194,7 @@ psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
 
 #' psiLogOddsInverse
 #' 
-#' This function is a transformation function that inverts the log odds
+#' This function is a transformation function that inverts the log odds.
 
 #' It's appropriate for mapping (-inf, inf) :->  (0, 1)
 #' As in all functions in this package, the parameters are set so that applying the same parameters to the main function 
