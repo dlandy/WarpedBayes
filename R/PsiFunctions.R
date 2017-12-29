@@ -21,10 +21,12 @@ psiLinear <- function (x, ...) {
   UseMethod("psiLinear", x)
 }
 
+#' @export
 psiLinear.list <- function(stimuli, shift=0, scaling=1){
     mapply(psiLinear, stimuli, shift, scaling, SIMPLIFY=FALSE)
 }
 
+#' @export
 psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
   stimuli*scaling + shift
 }  
