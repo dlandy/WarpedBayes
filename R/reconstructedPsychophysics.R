@@ -105,7 +105,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 
 #Helper functions that fit data!
 #' @export
-fit <- function(model, stimuli, responses
+fitWarpedBayesModel <- function(model, stimuli, responses
                 , initialPars
                 , parNames=initialPars
                 , control=list(maxit=5000, reltol = 10e-30)

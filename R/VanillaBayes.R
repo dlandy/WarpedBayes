@@ -36,6 +36,8 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
   tauIntegration = tauStimuli + tauCategory
   if(length(responses)==1 && responses=="none"){
     predictions
+  } else if(length(responses)==1 && responses=="simulation"){
+      rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
   } else {
     if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative
     result <- 0-sum(log(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))) # Bad Normal Assumption
