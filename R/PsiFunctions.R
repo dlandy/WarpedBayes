@@ -372,7 +372,7 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
   brokenVersion <- split(stimuli, cut(stimuli,breaks=references, labels=FALSE))
   mapply(multiCycleScalingFunction,
          brokenVersion
-         , references[1:length(references-1)]
+         , references[1:length(references)-1]
          , references[2:length(references)])
 }  
 
