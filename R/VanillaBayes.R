@@ -21,7 +21,7 @@ vanillaBayes <- function (stimuli, ...) {
   UseMethod("vanillaBayes", stimuli)
 }
 
-#' @export
+#' @export 
 vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
   if(length(kappa) == length(stimuli)-2       && length(kappa)>1      ){kappa       <- c(Inf, kappa, Inf)}
   if(length(tauStimuli) == length(stimuli)-2  && length(tauStimuli)>1 ){tauStimuli  <- c(Inf, tauStimuli, Inf)}
