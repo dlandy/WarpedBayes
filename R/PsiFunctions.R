@@ -358,10 +358,10 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
   multiCycleScalingFunction <- function(stimuli, left, right){
     if(left==-Inf && right==Inf){
       stimuli
-    } else if(right==Inf){
-      stimuli - left
-    } else if(left==-Inf){
+    } else if(left == -Inf){
       stimuli - right
+    } else if(right == Inf){
+      stimuli - left
     } else {
       (stimuli-left)/(right-left)    
     }
@@ -369,7 +369,7 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
   
   if(references[1]!= -Inf){references <- c(-Inf, references)}
   if(references[length(references)]!= Inf){references <- c(references, Inf)}
-  brokenVersion <- split(stimuli, cut(stimuli,breaks=references, labels=FALSE))
+  brokenVersion <- split(stimuli, cut(stimuli,breaks=references, ordered_result=TRUE))
   mapply(multiCycleScalingFunction,
          brokenVersion
          , references[1:length(references)-1]
