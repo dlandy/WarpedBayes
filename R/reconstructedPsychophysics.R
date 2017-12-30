@@ -29,3 +29,6 @@ bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory
                                         , responses=psiLog(responses))
   }
 }
+
+
+
