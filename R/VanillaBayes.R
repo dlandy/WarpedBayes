@@ -24,7 +24,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 }
 
 
-vanillaBayes.vecteor <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+vanillaBayes.vector <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
   if(responses=="none"){
