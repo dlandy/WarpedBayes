@@ -391,7 +391,6 @@ multiCycle <- function (x, ...) {
 
 #' @export
 multiCycle.list <- function(stimuli, references=c(0)){
-  print("list MultiCycle")
   mapply(multiCycle, stimuli, references, SIMPLIFY=FALSE)
 }
 
@@ -463,11 +462,12 @@ multiCycleInverse <- function (x, ...) {
 
 
 #' @export
-multiCycleInverse.logLikelihoodOfResponses <- function(warpedStimuli, references=c(0)){warpedStimuli}
+multiCycleInverse.logLikelihoodOfResponses <- function(warpedStimuli, references=c(0)){sum(warpedStimuli)}
 
 #' @export
 multiCycleInverse.list <- function(warpedStimuli, references=c(0)){
   multiCycleInverseScalingFunction <- function(warpedStimuli, left, right){
+    if("logLikelihoodOfResponses" %in% class(warpedStimuli)){return(sum(warpedStimuli))}
     if(left==-Inf && right==Inf){
       warpedStimuli
     } else if(left == -Inf){
