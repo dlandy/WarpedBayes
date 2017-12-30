@@ -17,10 +17,15 @@
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
-  result <- stimuli %>% psiLog %>% vanillaBayes(kappa=kappa, tauStimuli=tauStimuli, tauCategory=tauCategory, responses=responses) 
+
   if(length(responses)==1 && responses=="none"){
-   result %>% psiLogInverse
-  } else {
-    result
+    stimuli %>% psiLog %>% vanillaBayes(kappa=kappa
+                                        , tauStimuli=tauStimuli
+                                        , tauCategory=tauCategory) %>% psiLogInverse()
+    } else {
+    stimuli %>% psiLog %>% vanillaBayes(kappa=kappa
+                                        , tauStimuli=tauStimuli
+                                        , tauCategory=tauCategory
+                                        , responses=psiLog(responses))
   }
 }
