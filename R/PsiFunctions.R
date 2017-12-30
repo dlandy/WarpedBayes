@@ -340,8 +340,8 @@ psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
 #' @export
 #' @examples
-#' multiCycle(-100:100, c(-100, 0, 100))
-#' (-100:100/100) %>% multiCycle(-1, 0, 1) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+#' multiCycle(-99:100, c(-100, 0, 100))
+#' (-99:100/100) %>% multiCycle(-1, 0, 1) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
 #' psiLinear(-10:10, shift=10, scaling=2)
 #' -10:10 %>% psiLinear(shift=2, scaling=0.5)
 multiCycle <- function (x, ...) {
@@ -350,6 +350,7 @@ multiCycle <- function (x, ...) {
 
 #' @export
 multiCycle.list <- function(stimuli, references=c(0)){
+  print("list MultiCycle")
   mapply(multiCycle, stimuli, references, SIMPLIFY=FALSE)
 }
 
@@ -373,7 +374,8 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
   mapply(multiCycleScalingFunction,
          brokenVersion
          , references[1:length(references)-1]
-         , references[2:length(references)])
+         , references[2:length(references)]
+         , SIMPLIFY=FALSE)
 }  
 
 

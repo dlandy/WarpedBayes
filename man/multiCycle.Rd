@@ -31,8 +31,8 @@ might be divided by a line of vertical symmetry into two regions
  with a command like -10:10 %>% multicycle(0) %>% psiPrelec
 }
 \examples{
-multiCycle(-100:100, c(-100, 0, 100))
-(-100:100/100) \%>\% multiCycle(-1, 0, 1) \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+multiCycle(-99:100, c(-100, 0, 100))
+(-99:100/100) \%>\% multiCycle(-1, 0, 1) \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
 psiLinear(-10:10, shift=10, scaling=2)
 -10:10 \%>\% psiLinear(shift=2, scaling=0.5)
 }
