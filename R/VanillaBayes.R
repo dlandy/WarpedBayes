@@ -20,11 +20,8 @@ vanillaBayes <- function (stimuli, ...) {
 
 #' @export
 vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
-  mapply(vanillaBayes, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
+  mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
 }
-
-#' @export
-test  <- function(x){x}
 
 
 #' @export
