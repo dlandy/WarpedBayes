@@ -25,6 +25,7 @@ psiLinear <- function (x, ...) {
 psiLinear.list <- function(stimuli, shift=0, scaling=1){
     mapply(psiLinear, stimuli, shift, scaling, SIMPLIFY=FALSE)
 }
+psiLinear.logLikelihoodOfResponses <- function(stimuli, shift=0, scaling=1){  stimuli}
 
 #' @export
 psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
@@ -211,6 +212,7 @@ psiLinearInverse <- function (x, ...) {
 psiLinearInverse.list <- function(warpedStimuli, shift=0, scaling=1){
   mapply(psiLinearInverse, warpedStimuli, shift, scaling, SIMPLIFY=FALSE)
 }
+psiLinearInverse.logLikelihoodOfResponses <- function(warpedStimuli, shift=0, scaling=1){  warpedStimuli}
 
 #' @export
 psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
