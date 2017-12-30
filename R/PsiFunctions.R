@@ -109,7 +109,7 @@ psiLogOdds <- function (x, ...) {
 }
 
 #' @export
-psiLogOdds.list <- function(stimuli, smallValue){
+psiLogOdds.list <- function(stimuli, smallValue=10^-5){
   mapply(psiLogOdds, stimuli, smallValue, SIMPLIFY=FALSE)
 }
 
@@ -337,13 +337,12 @@ psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' if they are omitted
 #' @return A vector containing warped stimuli, or a list of vectors
 #' @keywords psi perceptual tranformations
-#' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
+#' @seealso psiIdentity, multiCycleInverse
 #' @export
 #' @examples
 #' multiCycle(-99:100, c(-100, 0, 100))
 #' (-99:100/100) %>% multiCycle(-1, 0, 1) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
-#' psiLinear(-10:10, shift=10, scaling=2)
-#' -10:10 %>% psiLinear(shift=2, scaling=0.5)
+#' plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
 multiCycle <- function (x, ...) {
   UseMethod("multiCycle", x)
 }
@@ -378,6 +377,55 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
          , SIMPLIFY=FALSE)
 }  
 
+
+
+#' multiCycleInverse
+#' 
+#' recombines a mapping, of any sort (bounded, semi-bounded, or unbounded) into single region,
+#' by eliminating 'references' inside the space. Functionally, multiCycleInvers simply undoes a vector of stimuli into 
+#'
+#' For instance, a spatial region |----------------|
+#' might be divided by a line of vertical symmetry into two regions
+#'  |--------||--------|
+#'  And each be turned int an unbounded Prelec region
+#'  <--------><-------->
+#'  with a command like -10:10 %>% multicycle(0) %>% psiPrelec
+#'  multiCycleInverse would then recombine these values into a single range.
+#'
+#'  KEY LIMITATION: Right now, multiCycleInverse can only 'handle' one layer of recursion. That is, you can't make calls like
+#'  -10:10 %>% multiCycle %>% multiCycle %> multiCycleInverse %>% multiCycleInverse
+#'  . Sorry.
+#' @param warpedStimuli a vector of stimuli, between -inf and inf, or a list of vectors of stimuli
+#' @param references A vector of values.  This should include -Inf and Inf, but these are implicitly added
+#' if they are omitted
+#' @return A vector containing warped stimuli, or a list of vectors
+#' @keywords psi perceptual tranformations
+#' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
+#' @export
+#' @examples
+#' ***multiCycle(-99:100, c(-100, 0, 100))
+#' ***plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
+#' ***(-99:100/100) %>% multiCycle(-1, 0, 1) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+multiCycleInverse <- function(warpedStimuli, references=c(0)){
+  multiCycleInverseScalingFunction <- function(warpedStimuli, left, right){
+    if(left==-Inf && right==Inf){
+      warpedStimuli
+    } else if(left == -Inf){
+      warpedStimuli + right
+    } else if(right == Inf){
+      warpedStimuli + left
+    } else {
+      warpedStimuli*(right-left) + left
+    }
+  }
+  if(references[1]!= -Inf){references <- c(-Inf, references)}
+  if(references[length(references)]!= Inf){references <- c(references, Inf)}
+  mapply(multiCycleInverseScalingFunction,
+         brokenVersion
+         , references[1:length(references)-1]
+         , references[2:length(references)]
+         , SIMPLIFY=TRUE)
+}  
 
 
 

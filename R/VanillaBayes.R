@@ -14,7 +14,17 @@
 #' @examples
 #' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes(kappa=5) %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
-vanillaBayes <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+vanillaBayes <- function (stimuli, ...) {
+  UseMethod("vanillaBayes", stimuli)
+}
+
+#' @export
+vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
+  mapply(vanillaBayes, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
+}
+
+
+vanillaBayes.vecteor <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
   if(responses=="none"){
