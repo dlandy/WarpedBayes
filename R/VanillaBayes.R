@@ -23,6 +23,9 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
   mapply(vanillaBayes, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
 }
 
+#' @export
+test  <- function(x){x}
+
 
 #' @export
 vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
