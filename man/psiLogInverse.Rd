@@ -7,10 +7,10 @@
 psiLogInverse(warpedStimuli, smallValue = 10^-5)
 }
 \arguments{
-\item{stimuli}{a vector of positive stimuli, between 0 and inf}
+\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
 }
 \value{
-a vector containing "warped" stimuli identical to the original stimuli
+A vector containing unwarped stimuli
 }
 \description{
 This function is a transformation function that inverts the log...

@@ -7,12 +7,12 @@
 psiLogOddsInverse(x, ...)
 }
 \arguments{
-\item{stimuli}{a vector of positive stimuli, between 0 and inf}
+\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
 
 \item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set}
 }
 \value{
-a vector containing "warped" stimuli identical to the original stimuli
+A vector containing unwarped stimuli
 }
 \description{
 This function is a transformation function that inverts the log odds.

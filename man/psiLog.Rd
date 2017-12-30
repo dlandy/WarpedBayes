@@ -12,7 +12,7 @@ psiLog(x, ...)
 \item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses}
 }
 \value{
-a vector containing "warped" stimuli identical to the original stimuli
+a vector containing "warped" stimuli
 }
 \description{
 This function is a transformation function that takes the log...

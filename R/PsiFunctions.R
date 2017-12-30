@@ -66,7 +66,7 @@ psiIdentity.numeric <- function(stimuli){
 #' By design, it is robust to the inclusion of the occasional 0, which it maps to a very small value.
 #' @param stimuli a vector of positive stimuli, between 0 and inf
 #' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses
-#' @return a vector containing "warped" stimuli identical to the original stimuli
+#' @return a vector containing "warped" stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
 #' @export
@@ -97,13 +97,13 @@ psiLog.numeric <- function(stimuli, smallValue=10^-5){
 #' It's appropriate for mapping (0, 1):-> (-inf, inf).
 #' @param stimuli a vector of positive stimuli, between 0 and inf
 #' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses
-#' @return a vector containing "warped" stimuli identical to the original stimuli
+#' @return a vector containing "warped" stimuli 
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
 #' @export
 #' @examples
 #' psiLogOdds(1:100/100)
-#' 0:1000/1000 %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+#' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 psiLogOdds <- function (x, ...) {
   UseMethod("psiLogOdds", x)
 }
@@ -122,6 +122,40 @@ psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
   }
 
 
+
+
+#' psiPrelec
+#' 
+#' This function is a transformation function that takes the log of the log of the inverse (which
+#' can be used to generate the Prelec functions).
+#' By design, it is robust to the inclusion of the occasional 0,
+#' which it maps to a very small value, which can optionally be specified
+#' It's appropriate for mapping (0, 1):-> (-inf, inf).
+#' @param stimuli a vector of positive stimuli, between 0 and inf
+#' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses
+#' @return a vector containing "warped" stimuli
+#' @keywords psi perceptual tranformations
+#' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
+#' @export
+#' @examples
+#' psiPrelec(1:100/100)
+#' (0:1000/1000) %>% psiPrelec() %>% vanillaBayes() %>% psiPrelecInverse()  # Implements Prelec, 1998
+psiPrelec <- function (x, ...) {
+  UseMethod("psiPrelec", x)
+}
+
+#' @export
+psiPrelec.list <- function(stimuli, smallValue){
+  mapply(psiPrelec, stimuli, smallValue, SIMPLIFY=FALSE)
+}
+
+#' @export
+psiPrelec.numeric <- function(stimuli, smallValue=10^-5){
+  stimuli[stimuli==1] <- 1-smallValue
+  stimuli[stimuli==0] <- smallValue
+  d <- log(log(1/stimuli))
+  d
+}
 
 #INVERSE Functions
 
@@ -174,8 +208,8 @@ psiLinearInverse <- function (x, ...) {
 }
 
 #' @export
-psiLinearInverse.list <- function(warpedStimuli){
-  mapply(psiLinearInverse, warpedStimuli, SIMPLIFY=FALSE)
+psiLinearInverse.list <- function(warpedStimuli, shift=0, scaling=1){
+  mapply(psiLinearInverse, warpedStimuli, shift, scaling, SIMPLIFY=FALSE)
 }
 
 #' @export
@@ -190,8 +224,8 @@ psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
 #' This function is a transformation function that inverts the log...
 #' It's literally just exp(stimuli).
 #' It's appropriate for mapping  (-inf, inf):-> (0, +inf)
-#' @param stimuli a vector of positive stimuli, between 0 and inf
-#' @return a vector containing "warped" stimuli identical to the original stimuli
+#' @param warpedStimuli a vector of stimuli, between -inf and inf
+#' @return A vector containing unwarped stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
 #' @export
@@ -220,9 +254,9 @@ psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
 #' It's appropriate for mapping (-inf, inf) :->  (0, 1)
 #' As in all functions in this package, the parameters are set so that applying the same parameters to the main function 
 #' and the inverse yields an identity.
-#' @param stimuli a vector of positive stimuli, between 0 and inf
+#' @param warpedStimuli a vector of stimuli, between -inf and inf
 #' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set
-#' @return a vector containing "warped" stimuli identical to the original stimuli
+#' @return A vector containing unwarped stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
 #' @export
@@ -247,10 +281,101 @@ psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 
 
 
+#' psiPrelecInverse
+#' 
+#' This function is a transformation function inverts the Prelec transformation, ln(ln(1/s))
+#' By design, it is robust to the inclusion of the occasional 0,
+#' which it maps to a very small value, which can optionally be specified
+#' It's appropriate for mapping (0, 1):-> (-inf, inf).
+#' @param warpedStimuli a vector of stimuli, between -inf and inf
+#' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set
+#' @return A vector containing unwarped stimuli
+#' @keywords psi perceptual tranformations
+#' @seealso psiLinear, psiLogOdds, psiPrelec, psiLogInverse, psiIdentityInverse
+#' @export
+#' @examples
+#' psiPrelecInverse(-10:10)
+#' (0:1000/1000) %>% psiPrelec() %>% vanillaBayes() %>% psiPrelecInverse()  # Implements Prelec, 1998
+psiPrelecInverse <- function (x, ...) {
+  UseMethod("psiPrelecInverse", x)
+}
+
+#' @export
+psiPrelecInverse.list <- function(warpedStimuli, smallValue){
+  mapply(psiPrelec, warpedStimuli, smallValue, SIMPLIFY=FALSE)
+}
+
+#' @export
+psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
+  exp(-exp(warpedStimuli))
+  
+}
+
+
 # MULTICYCLING
 
 # Multicycling is an advanced art.  Basically, we 'multicycle' by a pair of functions and inverses 
 # that carve spaces into regions that are already bounded at lynchpin points.  These can include 'inf' and '-inf'
+
+
+#' multiCycle
+#' 
+#' Divides a mapping, of any sort (bounded, semi-bounded, or unbounded) into a finite number of distinct regions,
+#' by creating 'references' inside the space. Functionally, multiCycle simply divides a vector of stimuli into 
+#' A list of vectors of values based on their proportional distances between two references.  Usually, these
+#' are then fed into a psi function which creates a multiCycle space containing multiple infinite unbounded regions
+#' which are conceptually adjacent
+#'
+#' For instance, a spatial region |----------------|
+#' might be divided by a line of vertical symmetry into two regions
+#'  |--------||--------|
+#'  And each be turned int an unbounded Prelec region
+#'  <--------><-------->
+#'  with a command like -10:10 %>% multicycle(0) %>% psiPrelec
+#' @param stimuli a vector of stimuli, between -inf and inf, or a list of vectors of stimuli
+#' @param references A vector of values.  This should include -Inf and Inf, but these are implicitly added
+#' if they are omitted
+#' @return A vector containing warped stimuli, or a list of vectors
+#' @keywords psi perceptual tranformations
+#' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
+#' @export
+#' @examples
+#' multiCycle(-100:100, c(-100, 0, 100))
+#' (-100:100/100) %>% multiCycle(-1, 0, 1) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+#' psiLinear(-10:10, shift=10, scaling=2)
+#' -10:10 %>% psiLinear(shift=2, scaling=0.5)
+multiCycle <- function (x, ...) {
+  UseMethod("multiCycle", x)
+}
+
+#' @export
+multiCycle.list <- function(stimuli, references=c(0)){
+  mapply(multiCycle, stimuli, references, SIMPLIFY=FALSE)
+}
+
+#' @export
+multiCycle.numeric <- function(stimuli, references=c(0)){
+  multiCycleScalingFunction <- function(stimuli, left, right){
+    if(left==-Inf && right==Inf){
+      stimuli
+    } else if(right==Inf){
+      stimuli - left
+    } else if(left==-Inf){
+      stimuli - right
+    } else {
+      (stimuli-left)/(right-left)    
+    }
+  }
+  
+  if(references[1]!= -Inf){references <- c(-Inf, references)}
+  if(references[length(references)]!= Inf){references <- c(references, Inf)}
+  brokenVersion <- split(stimuli, cut(stimuli,breaks=references, labels=FALSE))
+  mapply(multiCycleScalingFunction,
+         brokenVersion
+         , references[1:length(references-1)]
+         , references[2:length(references)])
+}  
+
 
 
 
