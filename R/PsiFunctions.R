@@ -458,6 +458,8 @@ multiCycleInverse <- function (x, ...) {
   UseMethod("multiCycleInverse", x)
 }
 
+#' @export
+multiCycleInverse.numeric <- function(warpedStimuli, references=c(0)){sum(warpedStimuli)}
 
 
 
