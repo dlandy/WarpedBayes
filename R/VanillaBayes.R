@@ -8,9 +8,8 @@
 #' @param tauCategory The precision of the category distribution
 #' @param responses an optional vector of responses. If responses are given, the return value is the 
 #' @return A vector containing mean stimulus locations
-#' @details If the kappa, tauStimuli, and tauCategory items are all the same length,
-#' and are all more than length 1, and all are length 2 less than the number of bins, then we pad it by
-#' negative and positive infinity.
+#' @details If the kappa, tauStimuli, and tauCategory items are all more than length 1,
+#'  and  are length 2 less than the number of bins, then we pad them by negative and positive infinity.
 #' @keywords bayesianInference
 #' @seealso vanillaBayes
 #' @export
@@ -23,14 +22,9 @@ vanillaBayes <- function (stimuli, ...) {
 
 #' @export
 vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
-  if(length(kappa)==length(tauStimuli)
-     && length(tauStimuli)==length(tauCategory)
-     && length(kappa) == length(stimuli)-2
-     && length(kappa) > 1){
-    kappa       <- c(Inf, kappa, Inf)  
-    tauStimuli  <- c(Inf, tauStimuli, Inf)
-    tauCategory <- c(Inf, tauCategory, Inf)
-  }
+  if(length(kappa) == length(stimuli)-2       && length(kappa)>1      ){kappa       <- c(Inf, kappa, Inf)}
+  if(length(tauStimuli) == length(stimuli)-2  && length(tauStimuli)>1 ){tauStimuli  <- c(Inf, tauStimuli, Inf)}
+  if(length(tauCategory) == length(stimuli)-2 && length(tauCategory)>1){tauCategory <- c(Inf, tauCategory, Inf)}
   mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
 }
 

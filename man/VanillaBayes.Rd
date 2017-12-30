@@ -24,9 +24,8 @@ A vector containing mean stimulus locations
 Performs vanilla bayes (single category) on a set of stimuli
 }
 \details{
-If the kappa, tauStimuli, and tauCategory items are all the same length,
-and are all more than length 1, and all are length 2 less than the number of bins, then we pad it by
-negative and positive infinity.
+If the kappa, tauStimuli, and tauCategory items are all more than length 1,
+ and  are length 2 less than the number of bins, then we pad them by negative and positive infinity.
 }
 \examples{
 (0:1000/1000) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=5) \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
