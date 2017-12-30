@@ -35,7 +35,7 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
   robustLog <- function(x, smallValue=10^-300){
     x[x<=smallValue] <- smallValue
     log(x)
-  }
+  } 
   predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
   if(length(responses)==1 && responses=="none"){
