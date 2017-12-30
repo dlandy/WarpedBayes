@@ -465,7 +465,7 @@ multiCycleInverse <- function (x, ...) {
 #' @export
 multiCycleInverse.logLikelihoodOfResponses <- function(warpedStimuli, references=c(0)){warpedStimuli}
 
-#' 
+#' @export
 multiCycleInverse.list <- function(warpedStimuli, references=c(0)){
   multiCycleInverseScalingFunction <- function(warpedStimuli, left, right){
     if(left==-Inf && right==Inf){
