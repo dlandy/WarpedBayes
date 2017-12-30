@@ -95,6 +95,11 @@ psiLog.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
+psiLog.character <- function(stimuli, smallValue){stimuli}
+
+
+
+#' @export
 psiLog.numeric <- function(stimuli, smallValue=10^-5){
   stimuli[stimuli==0] <- smallValue
   log(stimuli)
@@ -392,6 +397,9 @@ multiCycle.list <- function(stimuli, references=c(0)){
 
 #' @export
 multiCycle.logLikelihoodOfResponses <- function(stimuli, references=c(0)){stimuli}
+
+#' @export
+multiCycle.character <- function(stimuli, references=c(0)){stimuli}
 
 
 #' @export
