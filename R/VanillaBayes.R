@@ -33,7 +33,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 #' @export 
 vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   robustLog <- function(x, smallValue=10^-300){
-    x[x<=0] <- smallValue
+    x[x<=smallValue] <- smallValue
     log(x)
   }
   predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
@@ -44,6 +44,7 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
       rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
   } else {
     if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative
+    print(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))
     result <- 0-sum(robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))) # Bad Normal Assumption
     class(result) <- append("logLikelihoodOfResponses", class(result))
     result
