@@ -421,7 +421,7 @@ multiCycleInverse <- function(warpedStimuli, references=c(0)){
   if(references[1]!= -Inf){references <- c(-Inf, references)}
   if(references[length(references)]!= Inf){references <- c(references, Inf)}
   mapply(multiCycleInverseScalingFunction,
-         brokenVersion
+         warpedStimuli
          , references[1:length(references)-1]
          , references[2:length(references)]
          , SIMPLIFY=TRUE)
