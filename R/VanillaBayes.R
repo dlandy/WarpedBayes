@@ -6,7 +6,7 @@
 #' @param kappa The location of the category
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
-#' @param responses an optional vector of responses. If responses are given, the return value is the 
+#' @param responses an optional vector of responses. If responses are given, the return value is the probability of these responses
 #' @return A vector containing mean stimulus locations
 #' @details If the kappa, tauStimuli, and tauCategory items are all more than length 1,
 #'  and  are length 2 less than the number of bins, then we pad them by negative and positive infinity.
@@ -16,6 +16,7 @@
 #' @examples
 #' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes(kappa=5) %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
+#' plot(-99:100/100, (-99:100/100) %>% multiCycle(references= c(-10, 0, 10)) %>% psiLogOdds() %>% vanillaBayes(kappa=c(-1, 1), tauStimuli=10) %>% psiLogOddsInverse() %>% multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
 vanillaBayes <- function (stimuli, ...) {
   UseMethod("vanillaBayes", stimuli)
 }
@@ -33,7 +34,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
-  if(responses=="none"){
+  if(length(responses)==1 && responses=="none"){
     predictions
   } else {
     if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative

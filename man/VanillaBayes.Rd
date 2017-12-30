@@ -15,7 +15,7 @@ vanillaBayes(stimuli, ...)
 
 \item{tauCategory}{The precision of the category distribution}
 
-\item{responses}{an optional vector of responses. If responses are given, the return value is the}
+\item{responses}{an optional vector of responses. If responses are given, the return value is the probability of these responses}
 }
 \value{
 A vector containing mean stimulus locations
@@ -30,6 +30,7 @@ If the kappa, tauStimuli, and tauCategory items are all more than length 1,
 \examples{
 (0:1000/1000) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=5) \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 1:1000 \%>\% psiLog() \%>\% vanillaBayes() \%>\% psiLogInverse()  # Implements Stevens Power Law
+plot(-99:100/100, (-99:100/100) \%>\% multiCycle(references= c(-10, 0, 10)) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=c(-1, 1), tauStimuli=10) \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
 }
 \seealso{
 vanillaBayes
