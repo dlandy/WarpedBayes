@@ -278,7 +278,7 @@ psiLogInverse.list <- function(warpedStimuli, smallValue=10^-5){
 psiLogInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
-psiLogInverse <- function(warpedStimuli, smallValue=10^-5){
+psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
   exp(warpedStimuli)
 }
 
