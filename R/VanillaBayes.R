@@ -48,7 +48,9 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
     print(robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration))))
     print(sum(robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))) )
     result <- 0-sum(robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))) # Bad Normal Assumption
+    print(result)
     class(result) <- append("logLikelihoodOfResponses", class(result))
+    print(result)
     result
   }
 }
