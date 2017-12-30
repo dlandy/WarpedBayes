@@ -30,7 +30,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 }
 
 
-#' @export
+#' @export 
 vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   robustLog <- function(x, smallValue=10^-300){
     x[x<=0] <- smallValue
