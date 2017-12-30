@@ -4,7 +4,7 @@
 \alias{multiCycleInverse}
 \title{multiCycleInverse}
 \usage{
-multiCycleInverse(warpedStimuli, references = c(0))
+multiCycleInverse(x, ...)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf, or a list of vectors of stimuli}
