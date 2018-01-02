@@ -30,6 +30,9 @@ psiLinear.list <- function(stimuli, shift=0, scaling=1){
 psiLinear.logLikelihoodOfResponses <- function(stimuli, shift=0, scaling=1){  stimuli}
 
 #' @export
+psiLinear.default <- function(stimuli, smallValue){stimuli}
+
+#' @export
 psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
   stimuli*scaling + shift
 }  
@@ -54,6 +57,10 @@ psiIdentity <- function (x, ...) {
 psiIdentity.list <- function(stimuli){
   mapply(psiIdentity, stimuli, SIMPLIFY=FALSE)
 }
+
+#' @export
+psiIdentity.default <- function(stimuli, smallValue){stimuli}
+
 
 #' @export
 psiIdentity.logLikelihoodOfResponses <- function(stimuli){stimuli}
@@ -95,7 +102,7 @@ psiLog.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
-psiLog.character <- function(stimuli, smallValue){stimuli}
+psiLog.default <- function(stimuli, smallValue){stimuli}
 
 
 
@@ -128,6 +135,10 @@ psiLogOdds <- function (x, ...) {
 psiLogOdds.list <- function(stimuli, smallValue=10^-5){
   mapply(psiLogOdds, stimuli, smallValue, SIMPLIFY=FALSE)
 }
+
+#' @export
+psiLogOdds.default <- function(stimuli, smallValue){stimuli}
+
 
 
 #' @export
@@ -164,6 +175,9 @@ psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
 psiPrelec <- function (x, ...) {
   UseMethod("psiPrelec", x)
 }
+
+#' @export
+psiPrelec.default <- function(stimuli, smallValue){stimuli}
 
 #' @export
 psiPrelec.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
@@ -209,6 +223,10 @@ psiIdentityInverse.list <- function(warpedStimuli){
 }
 
 #' @export
+psiIdentityInverse.default <- function(stimuli, smallValue){stimuli}
+
+
+#' @export
 psiIdentityInverse.logLikelihoodOfResponses <- function(warpedStimuli){warpedStimuli}
 
 
@@ -240,6 +258,9 @@ psiLinearInverse <- function (x, ...) {
 psiLinearInverse.list <- function(warpedStimuli, shift=0, scaling=1){
   mapply(psiLinearInverse, warpedStimuli, shift, scaling, SIMPLIFY=FALSE)
 }
+
+#' @export
+psiLogOdds.default <- function(stimuli, smallValue){stimuli}
 
 #' @export
 psiLinearInverse.logLikelihoodOfResponses <- function(warpedStimuli, shift=0, scaling=1){warpedStimuli}
@@ -275,6 +296,10 @@ psiLogInverse.list <- function(warpedStimuli, smallValue=10^-5){
 }
 
 #' @export
+psiLogInverse.default <- function(stimuli, smallValue){stimuli}
+
+
+#' @export
 psiLogInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
@@ -301,6 +326,9 @@ psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 psiLogOddsInverse <- function (x, ...) {
   UseMethod("psiLogOddsInverse", x)
 }
+
+#' @export
+psiLogOddsInverse.default <- function(stimuli, smallValue){stimuli}
 
 #' @export
 psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
@@ -337,6 +365,9 @@ psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 psiPrelecInverse <- function (x, ...) {
   UseMethod("psiPrelecInverse", x)
 }
+
+#' @export
+psiPrelecInverse.default <- function(stimuli, smallValue){stimuli}
 
 #' @export
 psiPrelecInverse.list <- function(warpedStimuli, smallValue){
