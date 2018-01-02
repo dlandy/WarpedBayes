@@ -158,12 +158,13 @@ bayesianGonzalezWu <- function(stimuli
                                , kappa=0.0
                                , tauStimuli=1
                                , tauCategory=1
+                               , rightBoundary=1
                                , responses="none"){
-  stimuli %>% psiLogOdds() %>% vanillaBayes(kappa=kappa
-                                            , tauStimuli=tauStimuli
-                                            , tauCategory= tauCategory
-                                            , responses=(responses %>% psiLogOdds)
-                                           ) %>% psiLogOddsInverse()
+  stimuli %>% multiCycle(c(0, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                                                                 , tauStimuli=tauStimuli
+                                                                                 , tauCategory= tauCategory
+                                                                                 , responses=(responses %>% psiLogOdds)
+  ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(0, rightBoundary)) 
 }
 
 

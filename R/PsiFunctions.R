@@ -49,8 +49,8 @@ psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
 #' @export
 #' @examples
 #' psiIdentity(-10:10)
-psiIdentity <- function (x, ...) {
-  UseMethod("psiIdentity", x)
+psiIdentity <- function (stimuli, smallValue=10^-5) {
+  UseMethod("psiIdentity", stimuli)
 }
 
 #' @export
@@ -127,8 +127,8 @@ psiLog.numeric <- function(stimuli, smallValue=10^-5){
 #' @examples
 #' psiLogOdds(1:100/100)
 #' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOdds <- function (x, ...) {
-  UseMethod("psiLogOdds", x)
+psiLogOdds <- function (stimuli, smallValue=10^-5) {
+  UseMethod("psiLogOdds", stimuli)
 }
 
 #' @export
