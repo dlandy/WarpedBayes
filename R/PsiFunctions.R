@@ -518,7 +518,8 @@ multiCycleInverse.list <- function(warpedStimuli, references=c(0)){
          , references[1:length(references)-1]
          , references[2:length(references)]
          , SIMPLIFY=TRUE)
-         , recursive=FALSE )
+         , recursive=FALSE
+         , use.names=FALSE)
 }  
 
 
