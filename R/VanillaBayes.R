@@ -1,19 +1,26 @@
 
 #' vanillaBayes
 #' 
-#' Performs vanilla bayes (single category) on a set of stimuli
+#' Performs vanilla bayes (single category) on a set of stimuli. 
 #' @param stimuli a vector of stimuli, between -inf and inf
 #' @param kappa The location of the category
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
 #' @param responses an optional vector of responses. If responses are given, the return value is the probability of these responses
-#' @return A vector containing mean stimulus locations
-#' @details If the kappa, tauStimuli, and tauCategory items are all more than length 1,
+#' @return A vector containing mean predicted stimulus locations, or the log likelihood of the responses given the model
+#' @details This function assumes that the data are in a metric 
+#' space (-inf, inf), with a single normally distributed generating category (with mean kappa and precision tauCategory). It further assumes a set of stimuli, which are
+#' normal distributions with means at the value of stimuli, and precision tauStimuli.  It returns either the mean expected 
+#' location of response to the stimuli (given the parameters), or if a set of responses is given, the log likelihood of the 
+#' responses given the model.
+#' 
+#' If the kappa, tauStimuli, and tauCategory items are all more than length 1,
 #'  and  are length 2 less than the number of bins, then we pad them by negative and positive infinity.
 #' @keywords bayesianInference
 #' @seealso vanillaBayes
 #' @export
 #' @examples
+#' #' (0:1000/1000) %>% vanillaBayes(kappa=5)  # Implements the  Bayesian normal-normal model typical to many analyses
 #' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes(kappa=5) %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
 #' plot(-99:100/100, (-99:100/100) %>% multiCycle(references= c(-10, 0, 10)) %>% psiLogOdds() %>% vanillaBayes(kappa=c(-1, 1), tauStimuli=10) %>% psiLogOddsInverse() %>% multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
@@ -27,7 +34,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
   if(length(tauStimuli) == length(stimuli)-2  && length(tauStimuli)>1 ){tauStimuli  <- c(Inf, tauStimuli, Inf)}
   if(length(tauCategory) == length(stimuli)-2 && length(tauCategory)>1){tauCategory <- c(Inf, tauCategory, Inf)}
   result <- mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
-  if(length(responses)==1 && (responses=="none" || responses=="simulation")){
+  if(length(responses)==1 && (responses=="none" || responses=="simulation" || responses=="prediction")){
     result
   }else{
     result <- sum(unlist(result))

@@ -136,8 +136,8 @@ psiLogOdds.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 #' @export
 psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
-  stimuli[stimuli==1] <- 1-smallValue
-  stimuli[stimuli==0] <- smallValue
+  stimuli[stimuli>= 1-smallValue] <- 1-smallValue
+  stimuli[stimuli <= smallValue] <- smallValue
   d <- log(stimuli/(1-stimuli))
   d
   }

@@ -90,6 +90,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                               , center = 0
                                               , responses="none"){
   refs <- c(leftBoundary, center, rightBoundary)
+  kapp <- c(kappa, 1-kappa)
   stimuli %>% multiCycle(references = refs) %>%
     psiLogOdds() %>% 
     vanillaBayes(kappa=kappa
@@ -108,13 +109,28 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 fitWarpedBayesModel <- function(model, stimuli, responses
                 , initialPars
                 , parNames=initialPars
-                , control=list(maxit=5000, reltol = 10e-30)
+                , control=list(maxit=5000, reltol = 10e-120)
 ){
   require(tidyverse)
   fitFunction <- function(pars){
     do.call(model, append(append(list(stimuli=stimuli), pars), list(responses=responses)))
   }
-  optim(initialPars, fitFunction, control=control )
+  result <- optim(initialPars, fitFunction, control=control )
+  predictions <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
+  a <- tibble(
+    stimulus = stimuli
+    , response = responses
+    , prediction = predictions
+    , value = result$value
+    , counts=result$counts[1]
+    , convergence = result$convergence
+  )
+  for(i in 1:length(result$par)){
+    a[names(result$par[i])] <- result$par[i]
+  }
+  
+  
+  a
 }
 
 

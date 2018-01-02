@@ -18,16 +18,23 @@ vanillaBayes(stimuli, ...)
 \item{responses}{an optional vector of responses. If responses are given, the return value is the probability of these responses}
 }
 \value{
-A vector containing mean stimulus locations
+A vector containing mean predicted stimulus locations, or the log likelihood of the responses given the model
 }
 \description{
-Performs vanilla bayes (single category) on a set of stimuli
+Performs vanilla bayes (single category) on a set of stimuli.
 }
 \details{
+This function assumes that the data are in a metric 
+space (-inf, inf), with a single normally distributed generating category (with mean kappa and precision tauCategory). It further assumes a set of stimuli, which are
+normal distributions with means at the value of stimuli, and precision tauStimuli.  It returns either the mean expected 
+location of response to the stimuli (given the parameters), or if a set of responses is given, the log likelihood of the 
+responses given the model.
+
 If the kappa, tauStimuli, and tauCategory items are all more than length 1,
  and  are length 2 less than the number of bins, then we pad them by negative and positive infinity.
 }
 \examples{
+#' (0:1000/1000) \%>\% vanillaBayes(kappa=5)  # Implements the  Bayesian normal-normal model typical to many analyses
 (0:1000/1000) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=5) \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 1:1000 \%>\% psiLog() \%>\% vanillaBayes() \%>\% psiLogInverse()  # Implements Stevens Power Law
 plot(-99:100/100, (-99:100/100) \%>\% multiCycle(references= c(-10, 0, 10)) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=c(-1, 1), tauStimuli=10) \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
