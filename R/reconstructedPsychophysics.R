@@ -91,10 +91,10 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                               , center = 0
                                               , responses="none"){
   refs <- c(leftBoundary, center, rightBoundary)
-  #kapp <- c(kappa, 1-kappa)
+  kappas <- c(kappa, 1-kappa)
   stimuli %>% multiCycle(references = refs) %>%
     psiLogOdds() %>% 
-    vanillaBayes(kappa=kappa
+    vanillaBayes(kappa=kappas
                  , tauStimuli=tauStimuli
                  , tauCategory=tauCategory
                  , responses=multiCycle(responses, references = refs) %>% psiLogOdds()
@@ -118,7 +118,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
     do.call(model, append(append(list(stimuli=stimuli), pars), list(responses=responses)))
   }
   result <- optim(initialPars, fitFunction, control=control )
-  predictions <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
+  predictions <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="none")))
   a <- tibble(
     stimulus = stimuli
     , response = responses
@@ -134,6 +134,36 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   
   a
 }
+
+
+
+#' bayesianGonzalezWu
+#' @param stimuli a vector of stimuli, between 0 and inf
+#' @param kappa The location of the category
+#' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
+#' @param tauCategory The precision of the category distribution
+#' @param responses an optional vector of responses.
+#' If responses are given, the return value is the logLikelihood of the responses given the parameters
+
+#' @return A vector the transformed stimuli
+#' @seealso bayesianHuttenlocherSpatialMemory
+#' @export
+#' @examples
+#' bayesianStevensPowerLaw(1:100)
+#' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
+#' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
+bayesianGonzalezWu <- function(stimuli
+                               , kappa=0.0
+                               , tauStimuli=1
+                               , tauCategory=1
+                               , responses="none"){
+  stimuli %>% psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                            , tauStimuli=tauStimuli
+                                            , tauCategory= tauCategory
+                                            , responses=(responses %>% psiLogOdds)
+                                           ) %>% psiLogOddsInverse()
+}
+
 
 
 

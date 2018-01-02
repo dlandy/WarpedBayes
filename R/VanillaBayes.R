@@ -34,7 +34,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
   if(length(tauStimuli) == length(stimuli)-2  && length(tauStimuli)>1 ){tauStimuli  <- c(Inf, tauStimuli, Inf)}
   if(length(tauCategory) == length(stimuli)-2 && length(tauCategory)>1){tauCategory <- c(Inf, tauCategory, Inf)}
   result <- mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
-  if(length(responses)==1 && (responses=="none" || responses=="simulation" || responses=="prediction")){
+  if(length(responses)==1 && (responses=="none" || responses=="simulation" )){
     result
   }else{
     result <- sum(unlist(result))
