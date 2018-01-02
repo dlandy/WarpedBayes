@@ -118,11 +118,13 @@ fitWarpedBayesModel <- function(model, stimuli, responses
     do.call(model, append(append(list(stimuli=stimuli), pars), list(responses=responses)))
   }
   result <- optim(initialPars, fitFunction, control=control )
-  predictions <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="none")))
+  simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
+  meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="none")))
   a <- tibble(
     stimulus = stimuli
     , response = responses
-    , prediction = predictions
+    , meanExpectation = meanExpectation
+    , simulation = simulation
     , value = result$value
     , counts=result$counts[1]
     , convergence = result$convergence
