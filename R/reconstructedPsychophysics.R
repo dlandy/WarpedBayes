@@ -106,16 +106,34 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 
 
 
-#Helper functions that fit data!
+
+
+#' fitWarpedBayesModel
+#' 
+#' A convenience function that packages several commonly popular moves that let a model do optimizaiotn. 
+#' @model a model that has the general layout of the "bayesian..." models included in this package.
+#' @param stimuli a vector of stimuli, in whatever raw format you like.
+#' @responses  a vector of stimuli, in whatever raw format you like.
+#' @return A tibble that contains one row for each stimulus/response pair, and includes 
+#' several columns (see details for details)
+#' @details The returned avalue includes two columns that are different on each line--the meanExpecation of the
+#' fitted model, and one simulation sampled from the final parameters.  Several more columns pass through the results of hte
+#' fit (value, counts, and convergence).  Finally, one column will be made per parameter. 
+#' This format is a convenient one if you plan to attach your model fits (and predictions) to a stimulus tibble.
+#' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
+#' @examples
+#' bayesianGonzalezWu(1:100/100)
+#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
+#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)#' @export
 fitWarpedBayesModel <- function(model, stimuli, responses
-                , initialPars
-                , parNames=initialPars
+                , initialPars= c()
+                , fixedPars = c()
                 , control=list(maxit=5000, reltol = 10e-120)
 ){
   require(tidyverse)
   fitFunction <- function(pars){
-    do.call(model, append(append(list(stimuli=stimuli), pars), list(responses=responses)))
+    do.call(model, append(append(list(stimuli=stimuli), pars, fixedPars), list(responses=responses)))
   }
   result <- optim(initialPars, fitFunction, control=control )
   simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
@@ -151,20 +169,21 @@ fitWarpedBayesModel <- function(model, stimuli, responses
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
 #' @examples
-#' bayesianStevensPowerLaw(1:100)
-#' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
-#' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
+#' bayesianGonzalezWu(1:100/100)
+#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
+#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianGonzalezWu <- function(stimuli
                                , kappa=0.0
                                , tauStimuli=1
                                , tauCategory=1
+                               , leftBoundary=0
                                , rightBoundary=1
                                , responses="none"){
-  stimuli %>% multiCycle(c(0, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
+  stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
                                                                                  , tauStimuli=tauStimuli
                                                                                  , tauCategory= tauCategory
                                                                                  , responses=(responses %>% psiLogOdds)
-  ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(0, rightBoundary)) 
+  ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
 }
 
 

@@ -5,7 +5,7 @@
 \title{bayesianGonzalezWu}
 \usage{
 bayesianGonzalezWu(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
-  rightBoundary = 1, responses = "none")
+  leftBoundary = 0, rightBoundary = 1, responses = "none")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
@@ -26,9 +26,9 @@ A vector the transformed stimuli
 bayesianGonzalezWu
 }
 \examples{
-bayesianStevensPowerLaw(1:100)
-bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
-bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
+bayesianGonzalezWu(1:100/100)
+bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
+bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 }
 \seealso{
 bayesianHuttenlocherSpatialMemory
