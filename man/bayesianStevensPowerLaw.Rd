@@ -16,7 +16,8 @@ bayesianStevensPowerLaw(stimuli, kappa = 0, tauStimuli = 1,
 
 \item{tauCategory}{The precision of the category distribution}
 
-\item{responses}{an optional vector of responses. If responses are given, the return value is the}
+\item{responses}{an optional vector of responses.
+If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{
 A vector the transformed stimuli

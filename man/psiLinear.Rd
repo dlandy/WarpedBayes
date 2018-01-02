@@ -4,7 +4,7 @@
 \alias{psiLinear}
 \title{psiLinear}
 \usage{
-psiLinear(x, ...)
+psiLinear(stimuli, shift = 0, scaling = 1)
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf, or a list of vectors of stimuli}
