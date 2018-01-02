@@ -90,13 +90,14 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                               , center = 0
                                               , responses="none"){
   refs <- c(leftBoundary, center, rightBoundary)
-  kapp <- c(kappa, 1-kappa)
+  #kapp <- c(kappa, 1-kappa)
   stimuli %>% multiCycle(references = refs) %>%
     psiLogOdds() %>% 
     vanillaBayes(kappa=kappa
                  , tauStimuli=tauStimuli
                  , tauCategory=tauCategory
-                 , responses=multiCycle(responses, references = refs))  %>% 
+                 , responses=multiCycle(responses, references = refs) %>% psiLogOdds()
+                 )  %>% 
     psiLogOddsInverse() %>% 
     multiCycleInverse(references = refs)
 }
