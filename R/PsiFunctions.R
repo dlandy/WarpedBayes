@@ -17,8 +17,8 @@
 #' psiLinear(-10:10)
 #' psiLinear(-10:10, shift=10, scaling=2)
 #' -10:10 %>% psiLinear(shift=2, scaling=0.5)
-psiLinear <- function (x, ...) {
-  UseMethod("psiLinear", x)
+psiLinear <- function (stimuli, shift=0, scaling=1) {
+  UseMethod("psiLinear",stimuli, shift=0, scaling=1)
 }
 
 #' @export

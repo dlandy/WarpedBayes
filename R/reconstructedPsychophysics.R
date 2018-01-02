@@ -6,7 +6,8 @@
 #' @param kappa The location of the category
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
-#' @param responses an optional vector of responses. If responses are given, the return value is the 
+#' @param responses an optional vector of responses.
+#' If responses are given, the return value is the logLikelihood of the responses given the parameters
 
 #' @return A vector the transformed stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
