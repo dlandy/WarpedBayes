@@ -145,16 +145,20 @@ bayesianGonzalezWu <- function(stimuli
                                , rightBoundary= 1+ smallValue
                                , responses="none"){
   # Test legal parameter values
-  minVal <- min(c(stimuli, responses), na.rm=T)
-  maxVal <- max(c(stimuli, responses), na.rm=T)
- 
+  if(is.numeric(responses)){
+    minVal <- min(c(stimuli, responses), na.rm=T)
+    maxVal <- max(c(stimuli, responses), na.rm=T)
+  } else {
+    minVal <- min(c(stimuli), na.rm=T)
+    maxVal <- max(c(stimuli), na.rm=T)
+  }
  
   if(minVal <= leftBoundary){
     warning("LeftBoundary (", leftBoundary, ") larger than smallest stimulus (", minVal , ")")
-    return(10^10+abs(minVal-leftBoundary)) # Return a large value for convenience for optim
+    return(10^5+abs(minVal-leftBoundary)) # Return a large value for convenience for optim
   } else if(is.numeric(maxVal) && maxVal >= rightBoundary){
       warning("RightBoundary (", rightBoundary, ") smaller than largest stimulus (", maxVal , ")!")
-      return(10^10+abs(maxVal-rightBoundary)) # Return a large value for convenience for optim
+      return(10^5+abs(maxVal-rightBoundary)) # Return a large value for convenience for optim
   }
   stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
                                                                                             , tauStimuli=tauStimuli
