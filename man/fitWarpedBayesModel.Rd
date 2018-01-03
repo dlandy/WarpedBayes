@@ -34,9 +34,10 @@ fit (value, counts, and convergence).  Finally, one column will be made per para
 This format is a convenient one if you plan to attach your model fits (and predictions) to a stimulus tibble.
 }
 \examples{
-bayesianGonzalezWu(1:100/100)
-bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
-bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)#' @export
+a <- fitWarpedBayesModel(bayesianGonzalezWu, 
+                         fakeStims, 
+                         fakeData, 
+                         initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
 }
 \seealso{
 bayesianHuttenlocherSpatialMemory

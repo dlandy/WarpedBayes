@@ -120,6 +120,53 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 
 
 
+#' bayesianGonzalezWu
+#' @param stimuli a vector of stimuli, between 0 and inf
+#' @param kappa The location of the category
+#' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
+#' @param tauCategory The precision of the category distribution
+#' @param leftBoundary The location of the posited (or fitted) psychological left-hand boundary of the screen. 0
+#' @param rightBoundary The location of the posited (or fitted) psychological right-hand boundary of the screen. 1
+#' @param responses an optional vector of responses.
+#' If responses are given, the return value is the logLikelihood of the responses given the parameters
+#' @return A vector the transformed stimuli
+#' @seealso bayesianHuttenlocherSpatialMemory
+#' @export
+#' @examples
+#' bayesianGonzalezWu(1:100/100)
+#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
+#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
+bayesianGonzalezWu <- function(stimuli
+                               , kappa=0.0
+                               , tauStimuli=1
+                               , tauCategory=1
+                               , smallValue = 10^-10
+                               , leftBoundary= 0-smallValue
+                               , rightBoundary= 1+ smallValue
+                               , responses=c()
+                               , mode="none"){
+  # Test legal parameter values
+  
+  minVal <- min(c(stimuli, responses), na.rm=T)
+  maxVal <- max(c(stimuli, responses), na.rm=T)
+ 
+ 
+  if(minVal <= leftBoundary){
+    warning("LeftBoundary (", leftBoundary, ") larger than smallest stimulus (", minVal , ")")
+    return(10^10) # Return a large value for convenience for optim
+  } else if(maxVal >= rightBoundary){
+      warning("RightBoundary (", rightBoundary, ") smaller than largest stimulus (", maxVal , ")!")
+      return(10^10) # Return a large value for convenience for optim
+  }
+  if(mode!="none"){responses = mode}
+  stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                                                                            , tauStimuli=tauStimuli
+                                                                                            , tauCategory= tauCategory
+                                                                                            , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
+  ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+}
+
+
 #' fitWarpedBayesModel
 #' 
 #' A convenience function that packages several commonly popular moves that let a model do optimizaiotn. 
@@ -138,9 +185,11 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
 #' @examples
-#' bayesianGonzalezWu(1:100/100)
-#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
-#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)#' @export
+#' a <- fitWarpedBayesModel(bayesianGonzalezWu, 
+#'                          fakeStims, 
+#'                          fakeData, 
+#'                          initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
+
 fitWarpedBayesModel <- function(model, stimuli, responses
                 , initialPars=NULL
                 , fixedPars =NULL
@@ -171,37 +220,6 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   a
 }
 
-
-
-#' bayesianGonzalezWu
-#' @param stimuli a vector of stimuli, between 0 and inf
-#' @param kappa The location of the category
-#' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
-#' @param tauCategory The precision of the category distribution
-#' @param leftBoundary The location of the posited (or fitted) psychological left-hand boundary of the screen. 0
-#' @param rightBoundary The location of the posited (or fitted) psychological right-hand boundary of the screen. 1
-#' @param responses an optional vector of responses.
-#' If responses are given, the return value is the logLikelihood of the responses given the parameters
-#' @return A vector the transformed stimuli
-#' @seealso bayesianHuttenlocherSpatialMemory
-#' @export
-#' @examples
-#' bayesianGonzalezWu(1:100/100)
-#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
-#' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
-bayesianGonzalezWu <- function(stimuli
-                               , kappa=0.0
-                               , tauStimuli=1
-                               , tauCategory=1
-                               , leftBoundary=0
-                               , rightBoundary=1
-                               , responses="none"){
-  stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
-                                                                                 , tauStimuli=tauStimuli
-                                                                                 , tauCategory= tauCategory
-                                                                                 , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
-  ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
-}
 
 
 
