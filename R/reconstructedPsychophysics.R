@@ -143,10 +143,8 @@ bayesianGonzalezWu <- function(stimuli
                                , smallValue = 10^-10
                                , leftBoundary= 0-smallValue
                                , rightBoundary= 1+ smallValue
-                               , responses=c()
-                               , mode="none"){
+                               , responses="none"){
   # Test legal parameter values
-  
   minVal <- min(c(stimuli, responses), na.rm=T)
   maxVal <- max(c(stimuli, responses), na.rm=T)
  
@@ -154,7 +152,7 @@ bayesianGonzalezWu <- function(stimuli
   if(minVal <= leftBoundary){
     warning("LeftBoundary (", leftBoundary, ") larger than smallest stimulus (", minVal , ")")
     return(10^10) # Return a large value for convenience for optim
-  } else if(maxVal >= rightBoundary){
+  } else if(maxVal!="none" && maxVal >= rightBoundary){
       warning("RightBoundary (", rightBoundary, ") smaller than largest stimulus (", maxVal , ")!")
       return(10^10) # Return a large value for convenience for optim
   }

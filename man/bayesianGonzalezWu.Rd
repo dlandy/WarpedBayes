@@ -6,7 +6,7 @@
 \usage{
 bayesianGonzalezWu(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
   smallValue = 10^-10, leftBoundary = 0 - smallValue, rightBoundary = 1 +
-  smallValue, responses = c(), mode = "none")
+  smallValue, responses = "none")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
