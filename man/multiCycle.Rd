@@ -4,7 +4,7 @@
 \alias{multiCycle}
 \title{multiCycle}
 \usage{
-multiCycle(x, ...)
+multiCycle(stimuli, references = c(0))
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf, or a list of vectors of stimuli}
@@ -32,9 +32,16 @@ might be divided by a line of vertical symmetry into two regions
 }
 \examples{
 multiCycle(-99:100, c(-100, 0, 100))
-(-99:100/100) \%>\% multiCycle(references= c(-1, 0, 1)) \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(references=c(-1, 0, 1)) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+(-99:100/100) \%>\% multiCycle(references= c(-1, 0, 1)) \%>\% 
+    psiLogOdds() \%>\% vanillaBayes() \%>\% 
+    psiLogOddsInverse() \%>\% multiCycleInverse(references=c(-1, 0, 1)) 
+    # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
 plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
-plot(-99:100/100, (-99:100/100) \%>\% multiCycle(references= c(-1, 0, 1)) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=c(-.8, .8)) \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(references=c(-1, 0, 1))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
+plot(-99:100/100, (-99:100/100) \%>\% multiCycle(references= c(-1, 0, 1)) \%>\% 
+    psiLogOdds() \%>\% vanillaBayes(kappa=c(-.8, .8)) \%>\% 
+    psiLogOddsInverse() \%>\%
+     multiCycleInverse(references=c(-1, 0, 1))-(-99:100/100),
+          ylab="bias", xlab="stimulus");abline(0,0)
 }
 \seealso{
 psiIdentity, multiCycleInverse

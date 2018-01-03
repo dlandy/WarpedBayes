@@ -20,7 +20,7 @@
 #' @seealso vanillaBayes
 #' @export
 #' @examples
-#' (0:1000/1000) %>% vanillaBayes(kappa=5)  \\
+#' (0:1000/1000) %>% vanillaBayes(kappa=5) 
 #'     # The  Bayesian normal-normal model typical to many analyses
 #' (0:1000/1000) %>% psiLogOdds() %>% 
 #'     vanillaBayes(kappa=5) %>% 

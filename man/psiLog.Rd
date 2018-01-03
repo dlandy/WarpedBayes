@@ -4,7 +4,7 @@
 \alias{psiLog}
 \title{psiLog}
 \usage{
-psiLog(x, ...)
+psiLog(stimuli, smallValue = 10^-5)
 }
 \arguments{
 \item{stimuli}{a vector of positive stimuli, between 0 and inf}
@@ -23,7 +23,9 @@ By design, it is robust to the inclusion of the occasional 0, which it maps to a
 \examples{
 psiLog(1:100)
 1:100 \%>\% psiLog()
-1:1000 \%>\% psiLog() \%>\% vanillaBayes() \%>\% psiLogInverse()  # Implements Stevens Power Law
+1:1000 \%>\% psiLog() \%>\% 
+    vanillaBayes() \%>\% 
+    psiLogInverse()  # Implements Stevens Power Law
 }
 \seealso{
 psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse

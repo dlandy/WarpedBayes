@@ -4,7 +4,7 @@
 \alias{multiCycleInverse}
 \title{multiCycleInverse}
 \usage{
-multiCycleInverse(x, ...)
+multiCycleInverse(warpedStimuli, references = c(0))
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf, or a list of vectors of stimuli}
@@ -33,9 +33,12 @@ KEY LIMITATION: Right now, multiCycleInverse can only 'handle' one layer of recu
  . Sorry.
 }
 \examples{
-***multiCycle(-99:100, c(-100, 0, 100))
-***plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
-***(-99:100/100) \%>\% multiCycle(-1, 0, 1) \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+multiCycle(-99:100, c(-100, 0, 100))
+plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
+(-99:100/100) \%>\% multiCycle(-1, 0, 1) \%>\% 
+    psiLogOdds() \%>\% vanillaBayes() \%>\% 
+    psiLogOddsInverse() \%>\% 
+    multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
 }
 \seealso{
 psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse

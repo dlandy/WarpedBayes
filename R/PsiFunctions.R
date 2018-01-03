@@ -87,13 +87,15 @@ psiIdentity.numeric <- function(stimuli){
 #' @examples
 #' psiLog(1:100)
 #' 1:100 %>% psiLog()
-#' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
-psiLog <- function (x, ...) {
-  UseMethod("psiLog", x)
+#' 1:1000 %>% psiLog() %>% 
+#'     vanillaBayes() %>% 
+#'     psiLogInverse()  # Implements Stevens Power Law
+psiLog <- function (stimuli, smallValue=10^-5) {
+  UseMethod("psiLog", stimuli)
 }
 
 #' @export
-psiLog.list <- function(stimuli, smallValue){
+psiLog.list <- function(stimuli, smallValue=10^-5){
   mapply(psiLog, stimuli, smallValue, SIMPLIFY=FALSE)
 }
 
@@ -126,7 +128,9 @@ psiLog.numeric <- function(stimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' psiLogOdds(1:100/100)
-#' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+#' (0:1000/1000) %>% psiLogOdds() %>%
+#'      vanillaBayes() %>% 
+#'      psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 psiLogOdds <- function (stimuli, smallValue=10^-5) {
   UseMethod("psiLogOdds", stimuli)
 }
@@ -172,12 +176,12 @@ psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
 #' @examples
 #' psiPrelec(1:100/100)
 #' (0:1000/1000) %>% psiPrelec() %>% vanillaBayes() %>% psiPrelecInverse()  # Implements Prelec, 1998
-psiPrelec <- function (x, ...) {
-  UseMethod("psiPrelec", x)
+psiPrelec <- function (stimuli, smallValue=10^-5) {
+  UseMethod("psiPrelec", stimuli)
 }
 
 #' @export
-psiPrelec.default <- function(stimuli, smallValue){stimuli}
+psiPrelec.default <- function(stimuli, smallValue=10^-5){stimuli}
 
 #' @export
 psiPrelec.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
@@ -213,8 +217,8 @@ psiPrelec.numeric <- function(stimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' psiIdentityInverse(-10:10)
-psiIdentityInverse <- function (x, ...) {
-UseMethod("psiIdentityInverse", x)
+psiIdentityInverse <- function (warpedStimuli) {
+UseMethod("psiIdentityInverse", warpedStimuli)
 }
 
 #' @export
@@ -250,8 +254,8 @@ psiIdentityInverse.numeric <- function(warpedStimuli){
 #' psiLinear(-10:10)
 #' psiLinear(-10:10, shift=10, scaling=2)
 #' -10:10 %>% psiLinear(shift=2, scaling=0.5)
-psiLinearInverse <- function (x, ...) {
-  UseMethod("psiLinearInverse", x)
+psiLinearInverse <- function (warpedStimuli, shift=0, scaling=1) {
+  UseMethod("psiLinearInverse", warpedStimuli)
 }
 
 #' @export
@@ -286,8 +290,8 @@ psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
 #' psiLogInverse(psiLog(1:100)) # returns 1:100
 #' psiLog(1:100) %>% psiLogInverse()
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
-psiLogInverse <- function (x, ...) {
-  UseMethod("psiLogInverse", x)
+psiLogInverse <- function (warpedStimuli, smallValue=10^-5) {
+  UseMethod("psiLogInverse", warpedStimuli )
 }
 
 #' @export
@@ -323,12 +327,12 @@ psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' @examples
 #' psiLogOdds(1:100/100)
 #' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOddsInverse <- function (x, ...) {
-  UseMethod("psiLogOddsInverse", x)
+psiLogOddsInverse <- function (stimuli, smallValue=10^-5) {
+  UseMethod("psiLogOddsInverse", stimuli)
 }
 
 #' @export
-psiLogOddsInverse.default <- function(stimuli, smallValue){stimuli}
+psiLogOddsInverse.default <- function(stimuli, smallValue=10^-5){stimuli}
 
 #' @export
 psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
@@ -361,13 +365,15 @@ psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' psiPrelecInverse(-10:10)
-#' (0:1000/1000) %>% psiPrelec() %>% vanillaBayes() %>% psiPrelecInverse()  # Implements Prelec, 1998
-psiPrelecInverse <- function (x, ...) {
+#' (0:1000/1000) %>% psiPrelec() %>% 
+#'     vanillaBayes() %>% 
+#'     psiPrelecInverse()  # Implements Prelec, 1998
+psiPrelecInverse <- function (stimuli, smallValue=10^-5) {
   UseMethod("psiPrelecInverse", x)
 }
 
 #' @export
-psiPrelecInverse.default <- function(stimuli, smallValue){stimuli}
+psiPrelecInverse.default <- function(stimuli, smallValue=10^-5){stimuli}
 
 #' @export
 psiPrelecInverse.list <- function(warpedStimuli, smallValue){
@@ -413,11 +419,18 @@ psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' multiCycle(-99:100, c(-100, 0, 100))
-#' (-99:100/100) %>% multiCycle(references= c(-1, 0, 1)) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(references=c(-1, 0, 1)) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+#' (-99:100/100) %>% multiCycle(references= c(-1, 0, 1)) %>% 
+#'     psiLogOdds() %>% vanillaBayes() %>% 
+#'     psiLogOddsInverse() %>% multiCycleInverse(references=c(-1, 0, 1)) 
+#'     # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
 #' plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
-#' plot(-99:100/100, (-99:100/100) %>% multiCycle(references= c(-1, 0, 1)) %>% psiLogOdds() %>% vanillaBayes(kappa=c(-.8, .8)) %>% psiLogOddsInverse() %>% multiCycleInverse(references=c(-1, 0, 1))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
-multiCycle <- function (x, ...) {
-  UseMethod("multiCycle", x)
+#' plot(-99:100/100, (-99:100/100) %>% multiCycle(references= c(-1, 0, 1)) %>% 
+#'     psiLogOdds() %>% vanillaBayes(kappa=c(-.8, .8)) %>% 
+#'     psiLogOddsInverse() %>%
+#'      multiCycleInverse(references=c(-1, 0, 1))-(-99:100/100),
+#'           ylab="bias", xlab="stimulus");abline(0,0)
+multiCycle <- function (stimuli, references=c(0)) {
+  UseMethod("multiCycle", stimuli)
 }
 
 #' @export
@@ -482,11 +495,14 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
 #' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
 #' @export
 #' @examples
-#' ***multiCycle(-99:100, c(-100, 0, 100))
-#' ***plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
-#' ***(-99:100/100) %>% multiCycle(-1, 0, 1) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse() %>% multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
-multiCycleInverse <- function (x, ...) {
-  UseMethod("multiCycleInverse", x)
+#' multiCycle(-99:100, c(-100, 0, 100))
+#' plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
+#' (-99:100/100) %>% multiCycle(-1, 0, 1) %>% 
+#'     psiLogOdds() %>% vanillaBayes() %>% 
+#'     psiLogOddsInverse() %>% 
+#'     multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+multiCycleInverse <- function (warpedStimuli, references=c(0)) {
+  UseMethod("multiCycleInverse", warpedStimuli)
 }
 
 #' @export

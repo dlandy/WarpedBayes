@@ -4,12 +4,12 @@
 \alias{psiLogOddsInverse}
 \title{psiLogOddsInverse}
 \usage{
-psiLogOddsInverse(x, ...)
+psiLogOddsInverse(stimuli, smallValue = 10^-5)
 }
 \arguments{
-\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
-
 \item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set}
+
+\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
 }
 \value{
 A vector containing unwarped stimuli

@@ -4,12 +4,12 @@
 \alias{psiPrelecInverse}
 \title{psiPrelecInverse}
 \usage{
-psiPrelecInverse(x, ...)
+psiPrelecInverse(stimuli, smallValue = 10^-5)
 }
 \arguments{
-\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
-
 \item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set}
+
+\item{warpedStimuli}{a vector of stimuli, between -inf and inf}
 }
 \value{
 A vector containing unwarped stimuli
@@ -22,7 +22,9 @@ It's appropriate for mapping (0, 1):-> (-inf, inf).
 }
 \examples{
 psiPrelecInverse(-10:10)
-(0:1000/1000) \%>\% psiPrelec() \%>\% vanillaBayes() \%>\% psiPrelecInverse()  # Implements Prelec, 1998
+(0:1000/1000) \%>\% psiPrelec() \%>\% 
+    vanillaBayes() \%>\% 
+    psiPrelecInverse()  # Implements Prelec, 1998
 }
 \seealso{
 psiLinear, psiLogOdds, psiPrelec, psiLogInverse, psiIdentityInverse
