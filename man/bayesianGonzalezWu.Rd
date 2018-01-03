@@ -16,6 +16,10 @@ bayesianGonzalezWu(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
 
 \item{tauCategory}{The precision of the category distribution}
 
+\item{leftBoundary}{The location of the posited (or fitted) psychological left-hand boundary of the screen. 0}
+
+\item{rightBoundary}{The location of the posited (or fitted) psychological right-hand boundary of the screen. 1}
+
 \item{responses}{an optional vector of responses.
 If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }

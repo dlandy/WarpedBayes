@@ -38,7 +38,8 @@ plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
 (-99:100/100) \%>\% multiCycle(-1, 0, 1) \%>\% 
     psiLogOdds() \%>\% vanillaBayes() \%>\% 
     psiLogOddsInverse() \%>\% 
-    multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+    multiCycleInverse(-1, 0, 1) # Implements Landy et al's model 
+    # of one-dimensional spatial memory, with fixed boundaries
 }
 \seealso{
 psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse

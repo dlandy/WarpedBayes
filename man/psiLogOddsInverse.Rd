@@ -4,12 +4,12 @@
 \alias{psiLogOddsInverse}
 \title{psiLogOddsInverse}
 \usage{
-psiLogOddsInverse(stimuli, smallValue = 10^-5)
+psiLogOddsInverse(warpedStimuli, smallValue = 10^-5)
 }
 \arguments{
-\item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set}
-
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}
+
+\item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses. Accepted here to give the function and its inverse the same parameter set}
 }
 \value{
 A vector containing unwarped stimuli
@@ -22,7 +22,9 @@ and the inverse yields an identity.
 }
 \examples{
 psiLogOdds(1:100/100)
-(0:1000/1000) \%>\% psiLogOdds() \%>\% vanillaBayes() \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+(0:1000/1000) \%>\% psiLogOdds() \%>\% 
+    vanillaBayes() \%>\% 
+    psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
 }
 \seealso{
 psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse

@@ -8,6 +8,8 @@ psiLogInverse(warpedStimuli, smallValue = 10^-5)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}
+
+\item{smallValue}{values smaller than this will be treated as this, to avoid anomalies near 0}
 }
 \value{
 A vector containing unwarped stimuli

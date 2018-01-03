@@ -30,7 +30,7 @@ psiLinear.list <- function(stimuli, shift=0, scaling=1){
 psiLinear.logLikelihoodOfResponses <- function(stimuli, shift=0, scaling=1){  stimuli}
 
 #' @export
-psiLinear.default <- function(stimuli, smallValue){stimuli}
+psiLinear.default <- function(stimuli, shift=0, scaling=1){stimuli}
 
 #' @export
 psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
@@ -43,6 +43,7 @@ psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
 #' It's really just here for testing things out.
 #' It is equivalent to calling psiLinear with default parameters
 #' @param stimuli a vector of stimuli, between -inf and inf
+#' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses
 #' @return a vector containing "warped" stimuli identical to the original stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
@@ -54,20 +55,20 @@ psiIdentity <- function (stimuli, smallValue=10^-5) {
 }
 
 #' @export
-psiIdentity.list <- function(stimuli){
+psiIdentity.list <- function(stimuli, smallValue=10^-5){
   mapply(psiIdentity, stimuli, SIMPLIFY=FALSE)
 }
 
 #' @export
-psiIdentity.default <- function(stimuli, smallValue){stimuli}
+psiIdentity.default <- function(stimuli, smallValue=10^-5){stimuli}
 
 
 #' @export
-psiIdentity.logLikelihoodOfResponses <- function(stimuli){stimuli}
+psiIdentity.logLikelihoodOfResponses <- function(stimuli, smallValue=10^-5){stimuli}
 
 
 #' @export
-psiIdentity.numeric <- function(stimuli){
+psiIdentity.numeric <- function(stimuli, smallValue=10^-5){
   stimuli
 }
 
@@ -211,31 +212,32 @@ psiPrelec.numeric <- function(stimuli, smallValue=10^-5){
 #' It's really just here for testing things out.
 #' It is equivalent to calling psiLinearInverse with default parameters
 #' @param warpedStimuli a vector of stimuli, between -inf and inf
+#' @param smallValue A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses
 #' @return a vector containing "unwarped" stimuli identical to the warped stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentity
 #' @export
 #' @examples
 #' psiIdentityInverse(-10:10)
-psiIdentityInverse <- function (warpedStimuli) {
+psiIdentityInverse <- function (warpedStimuli, smallValue=10^-5) {
 UseMethod("psiIdentityInverse", warpedStimuli)
 }
 
 #' @export
-psiIdentityInverse.list <- function(warpedStimuli){
+psiIdentityInverse.list <- function(warpedStimuli, smallValue=10^-5){
   mapply(psiIdentityInverse, warpedStimuli, SIMPLIFY=FALSE)
 }
 
 #' @export
-psiIdentityInverse.default <- function(stimuli, smallValue){stimuli}
+psiIdentityInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 
 #' @export
-psiIdentityInverse.logLikelihoodOfResponses <- function(warpedStimuli){warpedStimuli}
+psiIdentityInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 
 #' @export
-psiIdentityInverse.numeric <- function(warpedStimuli){
+psiIdentityInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
   warpedStimuli
 }
 
@@ -245,6 +247,8 @@ psiIdentityInverse.numeric <- function(warpedStimuli){
 #' 
 #' Creates mappings from -inf:+inf -> -inf:+inf, with a linear transformation mechanism
 #' @param warpedStimuli a vector of stimuli, between -inf and inf
+#' @param shift A scalar by which to (positively) offset the scaled values, or a list or vector of scalars
+#' @param scaling A scalar multiplier to the (unshifted) values, or a list or vector of scalars
 #' @return A vector containing unwarped stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinear
@@ -282,6 +286,7 @@ psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
 #' It's literally just exp(stimuli).
 #' It's appropriate for mapping  (-inf, inf):-> (0, +inf)
 #' @param warpedStimuli a vector of stimuli, between -inf and inf
+#' @param smallValue values smaller than this will be treated as this, to avoid anomalies near 0
 #' @return A vector containing unwarped stimuli
 #' @keywords psi perceptual tranformations
 #' @seealso psiLinear, psiLogOdds, psiPrelec, psiLog, psiIdentityInverse
@@ -300,7 +305,7 @@ psiLogInverse.list <- function(warpedStimuli, smallValue=10^-5){
 }
 
 #' @export
-psiLogInverse.default <- function(stimuli, smallValue){stimuli}
+psiLogInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 
 #' @export
@@ -326,13 +331,15 @@ psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' psiLogOdds(1:100/100)
-#' (0:1000/1000) %>% psiLogOdds() %>% vanillaBayes() %>% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOddsInverse <- function (stimuli, smallValue=10^-5) {
-  UseMethod("psiLogOddsInverse", stimuli)
+#' (0:1000/1000) %>% psiLogOdds() %>% 
+#'     vanillaBayes() %>% 
+#'     psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
+psiLogOddsInverse <- function (warpedStimuli, smallValue=10^-5) {
+  UseMethod("psiLogOddsInverse", warpedStimuli)
 }
 
 #' @export
-psiLogOddsInverse.default <- function(stimuli, smallValue=10^-5){stimuli}
+psiLogOddsInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
 psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
@@ -368,12 +375,12 @@ psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' (0:1000/1000) %>% psiPrelec() %>% 
 #'     vanillaBayes() %>% 
 #'     psiPrelecInverse()  # Implements Prelec, 1998
-psiPrelecInverse <- function (stimuli, smallValue=10^-5) {
-  UseMethod("psiPrelecInverse", x)
+psiPrelecInverse <- function (warpedStimuli, smallValue=10^-5) {
+  UseMethod("psiPrelecInverse", warpedStimuli)
 }
 
 #' @export
-psiPrelecInverse.default <- function(stimuli, smallValue=10^-5){stimuli}
+psiPrelecInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
 psiPrelecInverse.list <- function(warpedStimuli, smallValue){
@@ -500,7 +507,8 @@ multiCycle.numeric <- function(stimuli, references=c(0)){
 #' (-99:100/100) %>% multiCycle(-1, 0, 1) %>% 
 #'     psiLogOdds() %>% vanillaBayes() %>% 
 #'     psiLogOddsInverse() %>% 
-#'     multiCycleInverse(-1, 0, 1) # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+#'     multiCycleInverse(-1, 0, 1) # Implements Landy et al's model 
+#'     # of one-dimensional spatial memory, with fixed boundaries
 multiCycleInverse <- function (warpedStimuli, references=c(0)) {
   UseMethod("multiCycleInverse", warpedStimuli)
 }

@@ -27,15 +27,20 @@ bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory
 #' bayesianSpatialMemoryHuttenlocher
 #' 
 #' A simple package that assembles the symmetric model used by Huttenlocher and colleagues analyze spatial 
-#' estimations from memory in one dimension
-#' @param stimuli a vector of stimuli, between -inf and inf
-#' @param kappa The location of the categories (presumed symmetric on both sides around 0)
+#' estimations from memory in one dimension.
+#' @param stimuli a vector of stimuli, in public units between -inf and inf
+#' @param kappa The location of the categories (presumed symmetric on both sides around the midline of the screen)
+#' @param kappaObjective The location of the categories measured in objective units
 #' @param tauStimuli The precision of the stimulus traces: should be a single number
 #' @param tauCategory The precision of the category distribution: should be a single number
-#' @param boundaries The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
+#' @param boundary The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
 #' should not leave real data outside the boundaries
+#' @param leftBoundary The location of the posited (or fitted) psychological left-hand boundary of the screen. Defaults to -1 * 'boundary'
+#' @param rightBoundary The location of the posited (or fitted) psychological right-hand boundary of the screen. Defaults to 'boundary'
+#' @param center The posited (or fitted) psychological center of the screen (in public units: should be near the true center)
 #' @param responses an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @return A vector the transformed stimuli, or the logLikelihood of them.
+#' @details This package 
 #' @seealso psiIdentity, multiCycleInverse
 #' @export
 #' @examples
@@ -43,7 +48,8 @@ bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory
 #' bayesianSpatialMemoryHuttenlocher(-99:100/100, kappa=1, tauStimuli=2)
 #' bayesianSpatialMemoryHuttenlocher(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianSpatialMemoryHuttenlocher <- function(stimuli
-                                              , kappa=0.5
+                                              , kappaObjective = 0.5
+                                              , kappa=logOdds(kappaObjective)
                                               , tauStimuli=1
                                               , tauCategory=1
                                               , boundary = 1
@@ -71,8 +77,11 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
 #' @param kappa The location of the categories (presumed symmetric on both sides around 0)
 #' @param tauStimuli The precision of the stimulus traces: should be a single number
 #' @param tauCategory The precision of the category distribution: should be a single number
-#' @param boundaries The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
+#' @param boundary The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
 #' should not leave real data outside the boundaries
+#' @param leftBoundary The location of the posited (or fitted) psychological left-hand boundary of the screen. Defaults to -1 * 'boundary'
+#' @param rightBoundary The location of the posited (or fitted) psychological right-hand boundary of the screen. Defaults to 'boundary'
+#' @param center The posited (or fitted) psychological center of the screen (in public units: should be near the true center)
 #' @param responses an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @return A vector the transformed stimuli, or the logLikelihood of them.
 #' @seealso psiIdentity, multiCycleInverse
@@ -114,6 +123,9 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' @param model a model that has the general layout of the "bayesian..." models included in this package.
 #' @param stimuli a vector of stimuli, in whatever raw format you like.
 #' @param responses  a vector of stimuli, in whatever raw format you like.
+#' @param initialPars an initial set of any parameter values you expect optim to optimize over
+#' @param fixedPars a fixed set of any parameter values you do not expect optim to optimize over
+#' @param control Passed directly into optim's control parameter
 #' @return A tibble that contains one row for each stimulus/response pair, and includes 
 #' several columns (see details for details)
 #' @details The returned avalue includes two columns that are different on each line--the meanExpecation of the
@@ -133,14 +145,13 @@ fitWarpedBayesModel <- function(model, stimuli, responses
 ){
   
   
-  require(tidyverse)
   fitFunction <- function(pars){
     do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses)))
   }
-  result <- optim(initialPars, fitFunction, control=control )
+  result <- stats::optim(initialPars, fitFunction, control=control )
   simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
   meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="none")))
-  a <- tibble(
+  a <- tibble::tibble(
     stimulus = stimuli
     , response = responses
     , meanExpectation = meanExpectation
@@ -164,9 +175,10 @@ fitWarpedBayesModel <- function(model, stimuli, responses
 #' @param kappa The location of the category
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
+#' @param leftBoundary The location of the posited (or fitted) psychological left-hand boundary of the screen. 0
+#' @param rightBoundary The location of the posited (or fitted) psychological right-hand boundary of the screen. 1
 #' @param responses an optional vector of responses.
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
-#' @importFrom magrittr "%>%"
 #' @return A vector the transformed stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export

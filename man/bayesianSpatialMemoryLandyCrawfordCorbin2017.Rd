@@ -17,10 +17,16 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017(stimuli, kappa = 0.5,
 
 \item{tauCategory}{The precision of the category distribution: should be a single number}
 
-\item{responses}{an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters}
-
-\item{boundaries}{The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
+\item{boundary}{The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
 should not leave real data outside the boundaries}
+
+\item{leftBoundary}{The location of the posited (or fitted) psychological left-hand boundary of the screen. Defaults to -1 * 'boundary'}
+
+\item{rightBoundary}{The location of the posited (or fitted) psychological right-hand boundary of the screen. Defaults to 'boundary'}
+
+\item{center}{The posited (or fitted) psychological center of the screen (in public units: should be near the true center)}
+
+\item{responses}{an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{
 A vector the transformed stimuli, or the logLikelihood of them.

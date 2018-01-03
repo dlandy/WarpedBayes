@@ -31,7 +31,7 @@
 #'     psiLogOddsInverse() %>% 
 #'     multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), 
 #'         ylab="bias", xlab="stimulus");abline(0,0)
-vanillaBayes <- function (stimuli, ...) {
+vanillaBayes <- function (stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
   UseMethod("vanillaBayes", stimuli)
 }
 
@@ -53,11 +53,16 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 
 #' @export 
 vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+  vanillaBayesPredictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
+    tauIntegration = tauStimuli + tauCategory
+    beta <- tauStimuli/tauIntegration
+    beta*stimuli + (1-beta)*kappa
+  }
   robustLog <- function(x, smallValue=10^-300){
     x[x<=smallValue] <- smallValue
     log(x)
   } 
-  predictions = vanillaBayes.predictions(stimuli, kappa, tauStimuli, tauCategory)
+  predictions = vanillaBayesPredictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
   if(length(responses)==1 && responses=="none"){
     predictions
@@ -71,10 +76,6 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
   }
 }
 
-#' @export
-vanillaBayes.predictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
-  tauIntegration = tauStimuli + tauCategory
-  beta <- tauStimuli/tauIntegration
-  beta*stimuli + (1-beta)*kappa
-}
+
+
 

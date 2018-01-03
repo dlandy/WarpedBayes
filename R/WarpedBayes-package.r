@@ -5,4 +5,7 @@
 #'
 #' @name WarpedBayes
 #' @docType package
+#' @importFrom stats rnorm dnorm 
+#' @importFrom magrittr "%>%"
+
 NULL

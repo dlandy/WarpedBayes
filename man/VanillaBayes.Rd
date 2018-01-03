@@ -4,7 +4,8 @@
 \alias{vanillaBayes}
 \title{vanillaBayes}
 \usage{
-vanillaBayes(stimuli, ...)
+vanillaBayes(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
+  responses = "none")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf}

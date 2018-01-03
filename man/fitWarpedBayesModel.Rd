@@ -13,6 +13,12 @@ fitWarpedBayesModel(model, stimuli, responses, initialPars = NULL,
 \item{stimuli}{a vector of stimuli, in whatever raw format you like.}
 
 \item{responses}{a vector of stimuli, in whatever raw format you like.}
+
+\item{initialPars}{an initial set of any parameter values you expect optim to optimize over}
+
+\item{fixedPars}{a fixed set of any parameter values you do not expect optim to optimize over}
+
+\item{control}{Passed directly into optim's control parameter}
 }
 \value{
 A tibble that contains one row for each stimulus/response pair, and includes 

@@ -4,10 +4,12 @@
 \alias{psiIdentityInverse}
 \title{psiIdentityInverse}
 \usage{
-psiIdentityInverse(warpedStimuli)
+psiIdentityInverse(warpedStimuli, smallValue = 10^-5)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}
+
+\item{smallValue}{A value to set nominal 0's to, to avoid errors in plotting simulated data, or aberrant responses}
 }
 \value{
 a vector containing "unwarped" stimuli identical to the warped stimuli

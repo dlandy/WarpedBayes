@@ -4,30 +4,42 @@
 \alias{bayesianSpatialMemoryHuttenlocher}
 \title{bayesianSpatialMemoryHuttenlocher}
 \usage{
-bayesianSpatialMemoryHuttenlocher(stimuli, kappa = 0.5, tauStimuli = 1,
-  tauCategory = 1, boundary = 1, leftBoundary = -1 * boundary,
-  rightBoundary = boundary, center = 0, responses = "none")
+bayesianSpatialMemoryHuttenlocher(stimuli, kappaObjective = 0.5,
+  kappa = logOdds(kappaObjective), tauStimuli = 1, tauCategory = 1,
+  boundary = 1, leftBoundary = -1 * boundary, rightBoundary = boundary,
+  center = 0, responses = "none")
 }
 \arguments{
-\item{stimuli}{a vector of stimuli, between -inf and inf}
+\item{stimuli}{a vector of stimuli, in public units between -inf and inf}
 
-\item{kappa}{The location of the categories (presumed symmetric on both sides around 0)}
+\item{kappaObjective}{The location of the categories measured in objective units}
+
+\item{kappa}{The location of the categories (presumed symmetric on both sides around the midline of the screen)}
 
 \item{tauStimuli}{The precision of the stimulus traces: should be a single number}
 
 \item{tauCategory}{The precision of the category distribution: should be a single number}
 
-\item{responses}{an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters}
-
-\item{boundaries}{The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
+\item{boundary}{The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
 should not leave real data outside the boundaries}
+
+\item{leftBoundary}{The location of the posited (or fitted) psychological left-hand boundary of the screen. Defaults to -1 * 'boundary'}
+
+\item{rightBoundary}{The location of the posited (or fitted) psychological right-hand boundary of the screen. Defaults to 'boundary'}
+
+\item{center}{The posited (or fitted) psychological center of the screen (in public units: should be near the true center)}
+
+\item{responses}{an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{
 A vector the transformed stimuli, or the logLikelihood of them.
 }
 \description{
 A simple package that assembles the symmetric model used by Huttenlocher and colleagues analyze spatial 
-estimations from memory in one dimension
+estimations from memory in one dimension.
+}
+\details{
+This package
 }
 \examples{
 bayesianSpatialMemoryHuttenlocher(-99:100/100)

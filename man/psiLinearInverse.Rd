@@ -8,6 +8,10 @@ psiLinearInverse(warpedStimuli, shift = 0, scaling = 1)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}
+
+\item{shift}{A scalar by which to (positively) offset the scaled values, or a list or vector of scalars}
+
+\item{scaling}{A scalar multiplier to the (unshifted) values, or a list or vector of scalars}
 }
 \value{
 A vector containing unwarped stimuli
