@@ -152,7 +152,7 @@ bayesianGonzalezWu <- function(stimuli
   if(minVal <= leftBoundary){
     warning("LeftBoundary (", leftBoundary, ") larger than smallest stimulus (", minVal , ")")
     return(10^10) # Return a large value for convenience for optim
-  } else if(maxVal!="none" && maxVal >= rightBoundary){
+  } else if(is.numeric(maxVal) && maxVal >= rightBoundary){
       warning("RightBoundary (", rightBoundary, ") smaller than largest stimulus (", maxVal , ")!")
       return(10^10) # Return a large value for convenience for optim
   }
