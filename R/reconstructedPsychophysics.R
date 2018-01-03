@@ -156,7 +156,6 @@ bayesianGonzalezWu <- function(stimuli
       warning("RightBoundary (", rightBoundary, ") smaller than largest stimulus (", maxVal , ")!")
       return(10^10) # Return a large value for convenience for optim
   }
-  if(mode!="none"){responses = mode}
   stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
                                                                                             , tauStimuli=tauStimuli
                                                                                             , tauCategory= tauCategory
