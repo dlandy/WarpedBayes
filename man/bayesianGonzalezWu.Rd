@@ -5,8 +5,10 @@
 \title{bayesianGonzalezWu}
 \usage{
 bayesianGonzalezWu(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
-  smallValue = 10^-10, leftBoundary = 0 - smallValue, rightBoundary = 1 +
-  smallValue, responses = "none")
+  leftBoundaryObj = 0 - smallValue, rightBoundaryObj = 1 + smallValue,
+  smallValue = 10^-10, leftBoundaryScaled = log(0 - leftBoundaryObj),
+  rightBoundaryScaled = log(rightBoundaryObj - 1), responses = NULL,
+  mode = "prediction")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
@@ -17,12 +19,12 @@ bayesianGonzalezWu(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
 
 \item{tauCategory}{The precision of the category distribution}
 
+\item{responses}{an optional vector of responses.
+If responses are given, the return value is the logLikelihood of the responses given the parameters}
+
 \item{leftBoundary}{The location of the posited (or fitted) psychological left-hand boundary of the screen. 0}
 
 \item{rightBoundary}{The location of the posited (or fitted) psychological right-hand boundary of the screen. 1}
-
-\item{responses}{an optional vector of responses.
-If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{
 A vector the transformed stimuli

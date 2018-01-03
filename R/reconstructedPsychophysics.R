@@ -17,7 +17,7 @@
 #' bayesianStevensPowerLaw(1:100)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
-bayesianStevensPowerLaw <- function(stimuli, kappaObjective = 1, kappa=psiLog(kappaObjective), tauStimuli=1, tauCategory=1, responses="none"){
+bayesianStevensPowerLaw <- function(stimuli, kappaObjective = 1, kappa=psiLog(kappaObjective), tauStimuli=1, tauCategory=1, responses="prediction"){
     stimuli %>% psiLog %>% vanillaBayes(kappa=kappa
                                         , tauStimuli=tauStimuli
                                         , tauCategory=tauCategory
@@ -57,7 +57,7 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
                                               , leftBoundary = -1*boundary
                                               , rightBoundary = boundary
                                               , center = 0
-                                              , responses="none"){
+                                              , responses="prediction"){
   refs <- c(leftBoundary, center, rightBoundary)
   stimuli %>% multiCycle(references = refs) %>%
     vanillaBayes(kappa=kappa
@@ -101,7 +101,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                               , leftBoundary = -1*boundary
                                               , rightBoundary = boundary
                                               , center = 0
-                                              , responses="none"){
+                                              , responses="prediction"){
   refs <- c(leftBoundary, center, rightBoundary)
   kappas <- c(kappa, 1-kappa)
   stimuli %>% multiCycle(references = refs) %>%
@@ -140,31 +140,37 @@ bayesianGonzalezWu <- function(stimuli
                                , kappa=0.0
                                , tauStimuli=1
                                , tauCategory=1
+                               , leftBoundaryObj= 0 - smallValue
+                               , rightBoundaryObj = 1 + smallValue
                                , smallValue = 10^-10
-                               , leftBoundary= 0-smallValue
-                               , rightBoundary= 1+ smallValue
-                               , responses="none"){
-  # Test legal parameter values
-  if(is.numeric(responses)){
+                               , leftBoundaryScaled = log(0 - leftBoundaryObj)
+                               , rightBoundaryScaled= log(rightBoundaryObj - 1) 
+                               
+                               , responses=NULL
+                               , mode = "prediction"){
+ 
     minVal <- min(c(stimuli, responses), na.rm=T)
     maxVal <- max(c(stimuli, responses), na.rm=T)
-  } else {
-    minVal <- min(c(stimuli), na.rm=T)
-    maxVal <- max(c(stimuli), na.rm=T)
+    scaling <- maxVal - minVal 
+  # Test legal parameter values
+  if(minVal <= leftBoundaryObj){
+    warning("LeftBoundaryObj (", leftBoundaryObj, ") larger than smallest stimulus (", minVal , ")")
+    return(10^5+abs(minVal-leftBoundaryObj)) # Return a large value for convenience for optim
+  } else if(maxVal > rightBoundaryObj){
+      warning("RightBoundaryObj (", rightBoundaryObj, ") smaller than largest stimulus (", maxVal , ")!")
+      return(10^5+abs(maxVal-rightBoundaryObj)) # Return a large value for convenience for optim
   }
- 
-  if(minVal <= leftBoundary){
-    warning("LeftBoundary (", leftBoundary, ") larger than smallest stimulus (", minVal , ")")
-    return(10^5+abs(minVal-leftBoundary)) # Return a large value for convenience for optim
-  } else if(is.numeric(maxVal) && maxVal >= rightBoundary){
-      warning("RightBoundary (", rightBoundary, ") smaller than largest stimulus (", maxVal , ")!")
-      return(10^5+abs(maxVal-rightBoundary)) # Return a large value for convenience for optim
-  }
-  stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
-                                                                                            , tauStimuli=tauStimuli
-                                                                                            , tauCategory= tauCategory
-                                                                                            , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
-  ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+  leftBoundary = minVal - scaling * exp(leftBoundaryScaled) # in this expression, rB should be positive.
+  rightBoundary = maxVal + scaling * exp(rightBoundaryScaled) # in this expression, rB should be positive.
+  
+    
+  stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
+      psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                  , tauStimuli=tauStimuli
+                                  , tauCategory= tauCategory
+                                  , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
+                                  , mode=mode
+      ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
 }
 
 
@@ -201,9 +207,11 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   fitFunction <- function(pars){
     do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses)))
   }
-  result <- stats::optim(initialPars, fitFunction, control=control )
-  simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
-  meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="none")))
+  result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
+  print(result)
+  simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
+  meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
+  
   a <- tibble::tibble(
     stimulus = stimuli
     , response = responses

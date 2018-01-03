@@ -449,7 +449,7 @@ multiCycle.list <- function(stimuli, references=c(0)){
 multiCycle.logLikelihoodOfResponses <- function(stimuli, references=c(0)){stimuli}
 
 #' @export
-multiCycle.character <- function(stimuli, references=c(0)){stimuli}
+multiCycle.default <- function(stimuli, references=c(0)){stimuli}
 
 
 #' @export

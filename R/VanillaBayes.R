@@ -31,17 +31,21 @@
 #'     psiLogOddsInverse() %>% 
 #'     multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), 
 #'         ylab="bias", xlab="stimulus");abline(0,0)
-vanillaBayes <- function (stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+vanillaBayes <- function (stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses=NULL, mode="prediction") {
   UseMethod("vanillaBayes", stimuli)
 }
 
 #' @export 
-vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
+vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses=NULL, mode="prediction"){
   if(length(kappa) == length(stimuli)-2       && length(kappa)>1      ){kappa       <- c(Inf, kappa, Inf)}
   if(length(tauStimuli) == length(stimuli)-2  && length(tauStimuli)>1 ){tauStimuli  <- c(Inf, tauStimuli, Inf)}
   if(length(tauCategory) == length(stimuli)-2 && length(tauCategory)>1){tauCategory <- c(Inf, tauCategory, Inf)}
-  result <- mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, responses, SIMPLIFY=FALSE)
-  if(length(responses)==1 && (responses=="none" || responses=="simulation" )){
+  if(length(responses)>0){
+    result <- mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, responses, mode=mode, SIMPLIFY=FALSE)
+  } else {
+    result <- mapply(vanillaBayes, stimuli, kappa, tauStimuli, tauCategory, mode=mode, SIMPLIFY=FALSE)
+  }
+  if((length(responses)==0)&&(mode=="prediction" || mode=="simulation" )){
     result
   }else{
     result <- sum(unlist(result))
@@ -52,7 +56,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 
 
 #' @export 
-vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses="none") {
+vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses=NULL, mode="prediction") {
   vanillaBayesPredictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
     tauIntegration = tauStimuli + tauCategory
     beta <- tauStimuli/tauIntegration
@@ -64,9 +68,9 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
   } 
   predictions = vanillaBayesPredictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
-  if(length(responses)==1 && responses=="none"){
+  if(mode=="prediction"){
     predictions
-  } else if(length(responses)==1 && responses=="simulation"){
+  } else if(mode=="simulation"){
       rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
   } else {
     if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative
