@@ -4,14 +4,17 @@
 \alias{bayesianSpatialMemoryLandyCrawfordCorbin2017}
 \title{bayesianSpatialMemoryLandyCrawfordCorbin2017}
 \usage{
-bayesianSpatialMemoryLandyCrawfordCorbin2017(stimuli, kappa = 0.5,
-  tauStimuli = 1, tauCategory = 1, boundary = 1, leftBoundary = -1 *
-  boundary, rightBoundary = boundary, center = 0, responses = "none")
+bayesianSpatialMemoryLandyCrawfordCorbin2017(stimuli, kappaObjective = 0.5,
+  kappa = psiLogOdds(kappaObjective), tauStimuli = 1, tauCategory = 1,
+  boundary = 1, leftBoundary = -1 * boundary, rightBoundary = boundary,
+  center = 0, responses = "none")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf}
 
-\item{kappa}{The location of the categories (presumed symmetric on both sides around 0)}
+\item{kappaObjective}{The location of the categories measured in objective units}
+
+\item{kappa}{The location of the categories (presumed symmetric on both sides around the midline of the screen)}
 
 \item{tauStimuli}{The precision of the stimulus traces: should be a single number}
 

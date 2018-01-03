@@ -5,16 +5,16 @@
 \title{bayesianSpatialMemoryHuttenlocher}
 \usage{
 bayesianSpatialMemoryHuttenlocher(stimuli, kappaObjective = 0.5,
-  kappa = logOdds(kappaObjective), tauStimuli = 1, tauCategory = 1,
+  kappa = psiLogOdds(kappaObjective), tauStimuli = 1, tauCategory = 1,
   boundary = 1, leftBoundary = -1 * boundary, rightBoundary = boundary,
   center = 0, responses = "none")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, in public units between -inf and inf}
 
-\item{kappaObjective}{The location of the categories measured in objective units}
+\item{kappaObjective}{An alternative specification giving kappa in objective units}
 
-\item{kappa}{The location of the categories (presumed symmetric on both sides around the midline of the screen)}
+\item{kappa}{The location of the right-side category (presumed symmetric on both sides around the midline of the screen)}
 
 \item{tauStimuli}{The precision of the stimulus traces: should be a single number}
 

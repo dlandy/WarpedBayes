@@ -4,6 +4,7 @@
 #' bayesianStevensPowerLaw
 #' @param stimuli a vector of stimuli, between 0 and inf
 #' @param kappa The location of the category
+#' @param kappaObjective An alternative specification giving kappa in objective units
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
 #' @param responses an optional vector of responses.
@@ -16,7 +17,7 @@
 #' bayesianStevensPowerLaw(1:100)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
-bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory=1, responses="none"){
+bayesianStevensPowerLaw <- function(stimuli, kappaObjective = 1, kappa=psiLog(kappaObjective), tauStimuli=1, tauCategory=1, responses="none"){
     stimuli %>% psiLog %>% vanillaBayes(kappa=kappa
                                         , tauStimuli=tauStimuli
                                         , tauCategory=tauCategory
@@ -29,8 +30,8 @@ bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory
 #' A simple package that assembles the symmetric model used by Huttenlocher and colleagues analyze spatial 
 #' estimations from memory in one dimension.
 #' @param stimuli a vector of stimuli, in public units between -inf and inf
-#' @param kappa The location of the categories (presumed symmetric on both sides around the midline of the screen)
-#' @param kappaObjective The location of the categories measured in objective units
+#' @param kappa The location of the right-side category (presumed symmetric on both sides around the midline of the screen)
+#' @param kappaObjective An alternative specification giving kappa in objective units
 #' @param tauStimuli The precision of the stimulus traces: should be a single number
 #' @param tauCategory The precision of the category distribution: should be a single number
 #' @param boundary The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
@@ -49,7 +50,7 @@ bayesianStevensPowerLaw <- function(stimuli,  kappa=0, tauStimuli=1, tauCategory
 #' bayesianSpatialMemoryHuttenlocher(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianSpatialMemoryHuttenlocher <- function(stimuli
                                               , kappaObjective = 0.5
-                                              , kappa=logOdds(kappaObjective)
+                                              , kappa=psiLogOdds(kappaObjective)
                                               , tauStimuli=1
                                               , tauCategory=1
                                               , boundary = 1
@@ -74,7 +75,8 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
 #' A simple package that assembles the symmetric model used by Huttenlocher and colleagues analyze spatial 
 #' estimations from memory in one dimension
 #' @param stimuli a vector of stimuli, between -inf and inf
-#' @param kappa The location of the categories (presumed symmetric on both sides around 0)
+#' @param kappa The location of the categories (presumed symmetric on both sides around the midline of the screen)
+#' @param kappaObjective The location of the categories measured in objective units
 #' @param tauStimuli The precision of the stimulus traces: should be a single number
 #' @param tauCategory The precision of the category distribution: should be a single number
 #' @param boundary The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
@@ -91,7 +93,8 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
 #' bayesianSpatialMemoryLandyCrawfordCorbin2017(-99:100/100, kappa=1, tauStimuli=2)
 #' bayesianSpatialMemoryLandyCrawfordCorbin2017(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
-                                              , kappa=0.5
+                                              , kappaObjective = 0.5
+                                              , kappa=psiLogOdds(kappaObjective)
                                               , tauStimuli=1
                                               , tauCategory=1
                                               , boundary = 1

@@ -4,11 +4,14 @@
 \alias{bayesianStevensPowerLaw}
 \title{bayesianStevensPowerLaw}
 \usage{
-bayesianStevensPowerLaw(stimuli, kappa = 0, tauStimuli = 1,
-  tauCategory = 1, responses = "none")
+bayesianStevensPowerLaw(stimuli, kappaObjective = 1,
+  kappa = psiLog(kappaObjective), tauStimuli = 1, tauCategory = 1,
+  responses = "none")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
+
+\item{kappaObjective}{An alternative specification giving kappa in objective units}
 
 \item{kappa}{The location of the category}
 
