@@ -34,10 +34,17 @@ If the kappa, tauStimuli, and tauCategory items are all more than length 1,
  and  are length 2 less than the number of bins, then we pad them by negative and positive infinity.
 }
 \examples{
-#' (0:1000/1000) \%>\% vanillaBayes(kappa=5)  # Implements the  Bayesian normal-normal model typical to many analyses
-(0:1000/1000) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=5) \%>\% psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-1:1000 \%>\% psiLog() \%>\% vanillaBayes() \%>\% psiLogInverse()  # Implements Stevens Power Law
-plot(-99:100/100, (-99:100/100) \%>\% multiCycle(references= c(-10, 0, 10)) \%>\% psiLogOdds() \%>\% vanillaBayes(kappa=c(-1, 1), tauStimuli=10) \%>\% psiLogOddsInverse() \%>\% multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), ylab="bias", xlab="stimulus");abline(0,0)
+(0:1000/1000) \%>\% vanillaBayes(kappa=5)  \\\\
+    # The  Bayesian normal-normal model typical to many analyses
+(0:1000/1000) \%>\% psiLogOdds() \%>\% 
+    vanillaBayes(kappa=5) \%>\% 
+    psiLogOddsInverse()  #Gonzales & Wu, 1996
+1:1000 \%>\% psiLog() \%>\% vanillaBayes() \%>\% psiLogInverse()  # Stevens Power Law
+plot(-99:100/100, (-99:100/100) \%>\% multiCycle(references= c(-10, 0, 10)) \%>\% 
+    psiLogOdds() \%>\% vanillaBayes(kappa=c(-1, 1), tauStimuli=10) \%>\% 
+    psiLogOddsInverse() \%>\% 
+    multiCycleInverse(references=c(-10, 0, 10))-(-99:100/100), 
+        ylab="bias", xlab="stimulus");abline(0,0)
 }
 \seealso{
 vanillaBayes

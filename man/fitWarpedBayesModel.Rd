@@ -4,11 +4,15 @@
 \alias{fitWarpedBayesModel}
 \title{fitWarpedBayesModel}
 \usage{
-fitWarpedBayesModel(model, stimuli, responses, initialPars = c(),
-  fixedPars = c(), control = list(maxit = 5000, reltol = 1e-119))
+fitWarpedBayesModel(model, stimuli, responses, initialPars = NULL,
+  fixedPars = NULL, control = list(maxit = 5000, reltol = 1e-119))
 }
 \arguments{
+\item{model}{a model that has the general layout of the "bayesian..." models included in this package.}
+
 \item{stimuli}{a vector of stimuli, in whatever raw format you like.}
+
+\item{responses}{a vector of stimuli, in whatever raw format you like.}
 }
 \value{
 A tibble that contains one row for each stimulus/response pair, and includes 

@@ -111,9 +111,9 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' fitWarpedBayesModel
 #' 
 #' A convenience function that packages several commonly popular moves that let a model do optimizaiotn. 
-#' @model a model that has the general layout of the "bayesian..." models included in this package.
+#' @param model a model that has the general layout of the "bayesian..." models included in this package.
 #' @param stimuli a vector of stimuli, in whatever raw format you like.
-#' @responses  a vector of stimuli, in whatever raw format you like.
+#' @param responses  a vector of stimuli, in whatever raw format you like.
 #' @return A tibble that contains one row for each stimulus/response pair, and includes 
 #' several columns (see details for details)
 #' @details The returned avalue includes two columns that are different on each line--the meanExpecation of the
@@ -127,13 +127,15 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
 #' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)#' @export
 fitWarpedBayesModel <- function(model, stimuli, responses
-                , initialPars= c()
-                , fixedPars = c()
+                , initialPars=NULL
+                , fixedPars =NULL
                 , control=list(maxit=5000, reltol = 10e-120)
 ){
+  
+  
   require(tidyverse)
   fitFunction <- function(pars){
-    do.call(model, append(append(list(stimuli=stimuli), pars, fixedPars), list(responses=responses)))
+    do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses)))
   }
   result <- optim(initialPars, fitFunction, control=control )
   simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(responses="simulation")))
@@ -164,7 +166,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
 #' @param tauCategory The precision of the category distribution
 #' @param responses an optional vector of responses.
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
-
+#' @importFrom magrittr "%>%"
 #' @return A vector the transformed stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
@@ -182,7 +184,7 @@ bayesianGonzalezWu <- function(stimuli
   stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  psiLogOdds() %>% vanillaBayes(kappa=kappa
                                                                                  , tauStimuli=tauStimuli
                                                                                  , tauCategory= tauCategory
-                                                                                 , responses=(responses %>% psiLogOdds)
+                                                                                 , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
   ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
 }
 
