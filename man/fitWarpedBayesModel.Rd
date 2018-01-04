@@ -6,7 +6,7 @@
 \usage{
 fitWarpedBayesModel(model, stimuli, responses, initialPars = NULL,
   fixedPars = NULL, control = list(maxit = 5000, reltol = 1e-199),
-  fit = TRUE, optimizing = "Objective RMSE")
+  fit = TRUE, optimizing = "Objective Log Likelihood")
 }
 \arguments{
 \item{model}{a model that has the general layout of the "bayesian..." models included in this package.}

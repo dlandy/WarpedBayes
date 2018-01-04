@@ -169,18 +169,32 @@ bayesianGonzalezWu <- function(stimuli
     return(10^5+abs(maxValue-rightBoundaryObjective)) # Return a large value for convenience for optim
   }
   scaling <- (maxValue - minValue)
-  leftBoundary <- minValue - scaling * exp(leftBoundaryExpansion) # in this expression, rB should be positive.
-  rightBoundary <- maxValue + scaling * exp(rightBoundaryExpansion) # in this expression, rB should be positive.
+  leftBoundary <- minValue - scaling * exp(leftBoundaryExpansion) 
+  rightBoundary <- maxValue + scaling * exp(rightBoundaryExpansion) 
   
  
     
-  stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
+ 
+  if(mode=="Objective Log Likelihood"){
+    
+    predictions <- stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
       psiLogOdds() %>% vanillaBayes(kappa=kappa
-                                  , tauStimuli=tauStimuli
-                                  , tauCategory= tauCategory
-                                  , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
-                                  , mode=mode
+                                    , tauStimuli=tauStimuli
+                                    , tauCategory= tauCategory
+                                    , responses=NULL
+                                    , mode="prediction"
       ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+    #plot(predictions)
+    0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
+  } else {
+     stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
+      psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                    , tauStimuli=tauStimuli
+                                    , tauCategory= tauCategory
+                                    , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
+                                    , mode=mode
+      ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+  }
 }
 
 
@@ -215,27 +229,19 @@ fitWarpedBayesModel <- function(model, stimuli, responses
                 , fixedPars =NULL
                 , control=list(maxit=5000, reltol = 10e-200)
                 , fit=TRUE
-                , optimizing="Objective RMSE"
+                , optimizing="Objective Log Likelihood"
 ){
   # Safety check parameters
-  if(!(optimizing %in% c("Objective RMSE", "Subjective Log Likelihood"))){
+  if(!(optimizing %in% c("Objective Log Likelihood", "Subjective Log Likelihood"))){
    if(is.character(optimizing)){
      stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or Subjective Log Likelihood")
    } else {
      stop("Invalid value for optimizing. Please give me either Objective RMSE or Subjective Log Likelihood")
    }
   }
-  fitFunction <- function(pars){pars}
-  if(optimizing=="Objective RMSE"){
+
     fitFunction <- function(pars){
-      mse <- function(a,b){sqrt(mean((a-b)^2))}
-      predictions <- do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(mode="prediction")))
-      return(mse(predictions, responses))
-    }
-  } else {
-    fitFunction <- function(pars){
-      do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses, mode="logLikelihood")))
-    }
+      do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses, mode=optimizing)))
   }
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
