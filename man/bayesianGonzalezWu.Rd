@@ -4,7 +4,8 @@
 \alias{bayesianGonzalezWu}
 \title{bayesianGonzalezWu}
 \usage{
-bayesianGonzalezWu(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
+bayesianGonzalezWu(stimuli, kappa = psiLogOdds(kappaObjective),
+  kappaObjective = 0.5, tauStimuli = 1, tauCategory = 1,
   leftBoundaryObj = 0 - smallValue, rightBoundaryObj = 1 + smallValue,
   smallValue = 10^-10, leftBoundaryScaled = log(0 - leftBoundaryObj),
   rightBoundaryScaled = log(rightBoundaryObj - 1), responses = NULL,

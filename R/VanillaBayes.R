@@ -74,8 +74,21 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
       rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
   } else {
     if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative
-    result <- 0-sum(robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))) # Bad Normal Assumption
+    logLikelihoods <- robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))
+    
+    result <- 0-sum(logLikelihoods)
     class(result) <- append("logLikelihoodOfResponses", class(result))
+    if(length(predictions)>0){
+      a <- tibble(stimuli=stimuli, responses=responses, predictions=predictions)
+      #plot(logLikelihoods)
+      #print(ggplot(a, aes(x=stimuli))+geom_point(aes(y=responses))+geom_smooth(aes(y=predictions), color="red"))
+      #plot(stimuli, responses)
+      #print(mean((predictions-responses)^2))
+      #print(mean(logLikelihoods))
+      #print(min(logLikelihoods))
+    }
+   
+    #print(result)
     result
   }
 }

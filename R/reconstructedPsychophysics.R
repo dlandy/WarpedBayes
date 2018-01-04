@@ -17,7 +17,9 @@
 #' bayesianStevensPowerLaw(1:100)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2)
 #' bayesianStevensPowerLaw(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
-bayesianStevensPowerLaw <- function(stimuli, kappaObjective = 1, kappa=psiLog(kappaObjective), tauStimuli=1, tauCategory=1, responses="prediction"){
+bayesianStevensPowerLaw <- function(stimuli
+                                    , kappaObjective = 1
+                                    , kappa=psiLog(kappaObjective), tauStimuli=1, tauCategory=1, responses="prediction"){
     stimuli %>% psiLog %>% vanillaBayes(kappa=kappa
                                         , tauStimuli=tauStimuli
                                         , tauCategory=tauCategory
@@ -137,7 +139,8 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
 #' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianGonzalezWu <- function(stimuli
-                               , kappa=0.0
+                               , kappa=psiLogOdds(kappaObjective)
+                               , kappaObjective = 0.5
                                , tauStimuli=1
                                , tauCategory=1
                                , leftBoundaryObj= 0 - smallValue
@@ -200,33 +203,37 @@ bayesianGonzalezWu <- function(stimuli
 fitWarpedBayesModel <- function(model, stimuli, responses
                 , initialPars=NULL
                 , fixedPars =NULL
-                , control=list(maxit=5000, reltol = 10e-120)
+                , control=list(maxit=5000, reltol = 10e-200)
+                , fit=TRUE
 ){
   
   
   fitFunction <- function(pars){
-    do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses)))
+    do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses, mode="logLikelihood")))
   }
-  result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
-  print(result)
-  simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
-  meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
+  if(fit){
+    result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
+    #print(result)
+    simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
+    meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
   
-  a <- tibble::tibble(
-    stimulus = stimuli
-    , response = responses
-    , meanExpectation = meanExpectation
-    , simulation = simulation
-    , value = result$value
-    , counts=result$counts[1]
-    , convergence = result$convergence
-  )
-  for(i in 1:length(result$par)){
-    a[names(result$par[i])] <- result$par[i]
+    a <- tibble::tibble(
+      stimulus = stimuli
+      , response = responses
+      , meanExpectation = meanExpectation
+      , simulation = simulation
+      , value = result$value
+      , counts=result$counts[1]
+      , convergence = result$convergence
+    )
+    for(i in 1:length(result$par)){
+      a[names(result$par[i])] <- result$par[i]
+    }
+    a
+  } else { # just for debugging
+    result <-fitFunction(initialPars)
+    result
   }
-  
-  
-  a
 }
 
 
