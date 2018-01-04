@@ -186,6 +186,9 @@ bayesianGonzalezWu <- function(stimuli
 #' @param initialPars an initial set of any parameter values you expect optim to optimize over
 #' @param fixedPars a fixed set of any parameter values you do not expect optim to optimize over
 #' @param control Passed directly into optim's control parameter
+#' @param fit If set to false, simply returns the function evaluation over the initial parameters. This is mostly useful for debugging
+#' @param optimizing What criterion should be optimized?  Current valid values are "Objective RMSE" and "Subjective Log Likelihood". Subjective log likelihood is 
+#' currently considered to be confusing, and is not recommended for the naive user.
 #' @return A tibble that contains one row for each stimulus/response pair, and includes 
 #' several columns (see details for details)
 #' @details The returned avalue includes two columns that are different on each line--the meanExpecation of the
@@ -214,6 +217,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
      stop("Invalid value for optimizing. Please give me either Objective RMSE or Subjective Log Likelihood")
    }
   }
+  fitFunction <- function(pars){pars}
   if(optimizing=="Objective RMSE"){
     fitFunction <- function(pars){
       mse <- function(a,b){sqrt(mean((a-b)^2))}
@@ -251,62 +255,6 @@ fitWarpedBayesModel <- function(model, stimuli, responses
 }
 
 
-#' fitWarpedBayesModelMinimizeSurfaceDeviance
-#' 
-#' A convenience function that packages several commonly popular moves that let a model do optimizaiotn. 
-#' @param model a model that has the general layout of the "bayesian..." models included in this package.
-#' @param stimuli a vector of stimuli, in whatever raw format you like.
-#' @param responses  a vector of stimuli, in whatever raw format you like.
-#' @param initialPars an initial set of any parameter values you expect optim to optimize over
-#' @param fixedPars a fixed set of any parameter values you do not expect optim to optimize over
-#' @param control Passed directly into optim's control parameter
-#' @return A tibble that contains one row for each stimulus/response pair, and includes 
-#' several columns (see details for details)
-#' @details The returned avalue includes two columns that are different on each line--the meanExpecation of the
-#' fitted model, and one simulation sampled from the final parameters.  Several more columns pass through the results of hte
-#' fit (value, counts, and convergence).  Finally, one column will be made per parameter. 
-#' This format is a convenient one if you plan to attach your model fits (and predictions) to a stimulus tibble.
-#' @seealso bayesianHuttenlocherSpatialMemory
-#' @export
-#' @examples
-#' a <- fitWarpedBayesModelMinimizeSurfaceDeviance(bayesianGonzalezWu, 
-#'                          fakeStims, 
-#'                          fakeData, 
-#'                          initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
-
-fitWarpedBayesModelMinimizeSurfaceDeviance <- function(model, stimuli, responses
-                                , initialPars=NULL
-                                , fixedPars =NULL
-                                , control=list(maxit=5000, reltol = 10e-200)
-                                , fit=TRUE
-){
-  
-  
- 
-  if(fit){
-    result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
-    print(result)
-    simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
-    meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
-    
-    a <- tibble::tibble(
-      stimulus = stimuli
-      , response = responses
-      , meanExpectation = meanExpectation
-      , simulation = simulation
-      , value = result$value
-      , counts=result$counts[1]
-      , convergence = result$convergence
-    )
-    for(i in 1:length(result$par)){
-      a[names(result$par[i])] <- result$par[i]
-    }
-    a
-  } else { # just for debugging
-    result <-fitFunction(initialPars)
-    result
-  }
-}
 
 
 

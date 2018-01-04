@@ -20,6 +20,11 @@ fitWarpedBayesModel(model, stimuli, responses, initialPars = NULL,
 \item{fixedPars}{a fixed set of any parameter values you do not expect optim to optimize over}
 
 \item{control}{Passed directly into optim's control parameter}
+
+\item{fit}{If set to false, simply returns the function evaluation over the initial parameters. This is mostly useful for debugging}
+
+\item{optimizing}{What criterion should be optimized?  Current valid values are "Objective RMSE" and "Subjective Log Likelihood". Subjective log likelihood is 
+currently considered to be confusing, and is not recommended for the naive user.}
 }
 \value{
 A tibble that contains one row for each stimulus/response pair, and includes 
