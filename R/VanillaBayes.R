@@ -57,6 +57,9 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 
 #' @export 
 vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, responses=NULL, mode="prediction") {
+  if(!(is.null(responses) && (mode=="prediction")||(mode=="simulation"))){
+    warning("You gave me responses, so I gave you a log likelihood....but you set the mode for a prediction or simulation.  Did you mean to do this?")
+  } 
   vanillaBayesPredictions <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1){
     tauIntegration = tauStimuli + tauCategory
     beta <- tauStimuli/tauIntegration
@@ -79,16 +82,9 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
     result <- 0-sum(logLikelihoods)
     class(result) <- append("logLikelihoodOfResponses", class(result))
     if(length(predictions)>0){
-      a <- tibble(stimuli=stimuli, responses=responses, predictions=predictions)
-      #plot(logLikelihoods)
-      #print(ggplot(a, aes(x=stimuli))+geom_point(aes(y=responses))+geom_smooth(aes(y=predictions), color="red"))
-      #plot(stimuli, responses)
-      #print(mean((predictions-responses)^2))
-      #print(mean(logLikelihoods))
-      #print(min(logLikelihoods))
+
     }
    
-    #print(result)
     result
   }
 }

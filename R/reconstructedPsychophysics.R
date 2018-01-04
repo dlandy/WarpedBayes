@@ -205,11 +205,25 @@ fitWarpedBayesModel <- function(model, stimuli, responses
                 , fixedPars =NULL
                 , control=list(maxit=5000, reltol = 10e-200)
                 , fit=TRUE
+                , optimizing="Objective RMSE"
 ){
-  
-  
-  fitFunction <- function(pars){
-    do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses, mode="logLikelihood")))
+  if(!(optimizing %in% c("Objective RMSE", "Subjective Log Likelihood"))){
+   if(is.character(optimizing)){
+     stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or Subjective Log Likelihood")
+   } else {
+     stop("Invalid value for optimizing. Please give me either Objective RMSE or Subjective Log Likelihood")
+   }
+  }
+  if(optimizing=="Objective RMSE"){
+    fitFunction <- function(pars){
+      mse <- function(a,b){sqrt(mean((a-b)^2))}
+      predictions <- do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(mode="prediction")))
+      return(mse(predictions, responses))
+    }
+  } else {
+    fitFunction <- function(pars){
+      do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses, mode="logLikelihood")))
+    }
   }
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
@@ -217,6 +231,64 @@ fitWarpedBayesModel <- function(model, stimuli, responses
     simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
     meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
   
+    a <- tibble::tibble(
+      stimulus = stimuli
+      , response = responses
+      , meanExpectation = meanExpectation
+      , simulation = simulation
+      , value = result$value
+      , counts=result$counts[1]
+      , convergence = result$convergence
+    )
+    for(i in 1:length(result$par)){
+      a[names(result$par[i])] <- result$par[i]
+    }
+    a
+  } else { # just for debugging
+    result <-fitFunction(initialPars)
+    result
+  }
+}
+
+
+#' fitWarpedBayesModelMinimizeSurfaceDeviance
+#' 
+#' A convenience function that packages several commonly popular moves that let a model do optimizaiotn. 
+#' @param model a model that has the general layout of the "bayesian..." models included in this package.
+#' @param stimuli a vector of stimuli, in whatever raw format you like.
+#' @param responses  a vector of stimuli, in whatever raw format you like.
+#' @param initialPars an initial set of any parameter values you expect optim to optimize over
+#' @param fixedPars a fixed set of any parameter values you do not expect optim to optimize over
+#' @param control Passed directly into optim's control parameter
+#' @return A tibble that contains one row for each stimulus/response pair, and includes 
+#' several columns (see details for details)
+#' @details The returned avalue includes two columns that are different on each line--the meanExpecation of the
+#' fitted model, and one simulation sampled from the final parameters.  Several more columns pass through the results of hte
+#' fit (value, counts, and convergence).  Finally, one column will be made per parameter. 
+#' This format is a convenient one if you plan to attach your model fits (and predictions) to a stimulus tibble.
+#' @seealso bayesianHuttenlocherSpatialMemory
+#' @export
+#' @examples
+#' a <- fitWarpedBayesModelMinimizeSurfaceDeviance(bayesianGonzalezWu, 
+#'                          fakeStims, 
+#'                          fakeData, 
+#'                          initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
+
+fitWarpedBayesModelMinimizeSurfaceDeviance <- function(model, stimuli, responses
+                                , initialPars=NULL
+                                , fixedPars =NULL
+                                , control=list(maxit=5000, reltol = 10e-200)
+                                , fit=TRUE
+){
+  
+  
+ 
+  if(fit){
+    result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
+    print(result)
+    simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
+    meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
+    
     a <- tibble::tibble(
       stimulus = stimuli
       , response = responses
