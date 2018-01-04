@@ -4,9 +4,9 @@ test_that("bayesianGonzalezWu gives warnings and return values", {
   stims <- -10:10
   
   expect_warning(bayesianGonzalezWu(-5:1/2, kappa=0.8,tauStimuli=400,tauCategory=100, mode = "simulation")
-                 , "LeftBoundaryObj .* larger than smallest stimulus")
+                 , "leftBoundaryObjective .* larger than smallest stimulus")
   expect_warning(bayesianGonzalezWu(1:5/2, kappa=0.8,tauStimuli=400,tauCategory=100, mode= "simulation")
-                 , "RightBoundaryObj .* smaller than largest stimulus")
+                 , "rightBoundaryObjective .* smaller than largest stimulus")
   
 })
 
@@ -14,8 +14,8 @@ test_that("bayesianGonzalezWu gives warnings and return values", {
 
 test_that("bayesianGonzalezWu gives reasonable values", {
   fakeStims <- 1:10/10
-  fakeData <- bayesianGonzalezWu(fakeStims, kappa= -0.5,tauStimuli=786,tauCategory=262, rightBoundaryExpansion=-8, mode="prediction")
-  expect_lt(max(abs(fakeData- c(0.1001413, 0.2408544, 0.3308149, 0.4097610, 0.4847134, 0.5595559, 0.6377240, 0.7237672, 0.8267800, 0.997780))),
+  fakeData <- bayesianGonzalezWu(fakeStims, kappa= 0,tauStimuli=786,tauCategory=262, rightBoundaryExpansion=-8, mode="prediction")
+  expect_lt(max(abs(fakeData- c(0.1614052, 0.2612281, 0.3463018, 0.4245918, 0.5000377, 0.5754796, 0.6537560, 0.7388007, 0.8385564, 0.9980160))),
             1e-4)
 })
 
