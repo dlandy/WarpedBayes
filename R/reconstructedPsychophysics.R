@@ -121,15 +121,23 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 
 
 
-
 #' bayesianGonzalezWu
 #' @param stimuli a vector of stimuli, between 0 and inf
-#' @param kappa The location of the category
+#' @param kappa The location of the category in subjective space (from -inf to inf). Defaults to 0
+#' @param kappaObjective An alternative specification for the kappa location, situated in objective measures.
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
-#' @param leftBoundary The location of the posited (or fitted) psychological left-hand boundary of the screen. 0
-#' @param rightBoundary The location of the posited (or fitted) psychological right-hand boundary of the screen. 1
-#' @param responses an optional vector of responses.
+#' @param leftBoundaryObjective The location (in objective units) of the posited (or fitted) psychological left-hand boundary of legal 
+#' stimulus values. Defaults to a small amount less than 0
+#' @param rightBoundaryObjective The location (in objective units) of the posited (or fitted) psychological right-hand boundary of legal 
+#' stimulus values. Defaults to a small amount more than 1
+#' @param leftBoundaryExpansion How much beyond the minimium stimulus/response value should the left boundary be expanded?
+#' @param rightBoundaryExpansion How much beyond the maximum stimulus/response value should the right boundary be expanded?
+#' @param smallValue a small amount, by which to default boundary expansion
+#' @param minValue The lowest range value (in objective units).  Should be at least as small as the smallest stimulus and response.
+#' @param maxValue The highest range value  (in objective units).  Should be at least as large as the largest stimulus and response.
+#' @param responses an optional vector of responses
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "logLikelihoodOfResponses"
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @return A vector the transformed stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
@@ -139,33 +147,32 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2)
 #' bayesianGonzalezWu(1:100/100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianGonzalezWu <- function(stimuli
-                               , kappa=psiLogOdds(kappaObjective)
+                               , kappa = psiLogOdds(multiCycle(kappaObjective, references=c(leftBoundaryObjective, rightBoundaryObjective)))
                                , kappaObjective = 0.5
-                               , tauStimuli=1
-                               , tauCategory=1
-                               , leftBoundaryObj= 0 - smallValue
-                               , rightBoundaryObj = 1 + smallValue
+                               , tauStimuli = 1
+                               , tauCategory = 1
+                               , leftBoundaryObjective = 0-smallValue
+                               , rightBoundaryObjective = 1 + smallValue
+                               , rightBoundaryExpansion = log((rightBoundaryObjective-maxValue)/(maxValue - minValue))
+                               , leftBoundaryExpansion  = log((minValue-leftBoundaryObjective )/(maxValue - minValue))
+                               , minValue = min(c(stimuli, responses), na.rm=T)
+                               , maxValue = max(c(stimuli, responses), na.rm=T)
                                , smallValue = 10^-10
-                               , leftBoundaryScaled = log(0 - leftBoundaryObj)
-                               , rightBoundaryScaled= log(rightBoundaryObj - 1) 
-                               
                                , responses=NULL
                                , mode = "prediction"){
- 
-    minVal <- min(c(stimuli, responses), na.rm=T)
-    maxVal <- max(c(stimuli, responses), na.rm=T)
-    scaling <- maxVal - minVal 
-  # Test legal parameter values
-  if(minVal <= leftBoundaryObj){
-    warning("LeftBoundaryObj (", leftBoundaryObj, ") larger than smallest stimulus (", minVal , ")")
-    return(10^5+abs(minVal-leftBoundaryObj)) # Return a large value for convenience for optim
-  } else if(maxVal > rightBoundaryObj){
-      warning("RightBoundaryObj (", rightBoundaryObj, ") smaller than largest stimulus (", maxVal , ")!")
-      return(10^5+abs(maxVal-rightBoundaryObj)) # Return a large value for convenience for optim
+  # Safety check parameters
+  if(minValue <= leftBoundaryObjective){
+    warning("leftBoundaryObjective (", leftBoundaryObjective, ") larger than smallest stimulus (", minValue , ")")
+    return(10^5+abs(minValue-leftBoundaryObjective)) # Return a large value for convenience for optim
+  } else if(maxValue > rightBoundaryObjective){
+    warning("rightBoundaryObjective (", rightBoundaryObjective, ") smaller than largest stimulus (", maxValue , ")!")
+    return(10^5+abs(maxValue-rightBoundaryObjective)) # Return a large value for convenience for optim
   }
-  leftBoundary = minVal - scaling * exp(leftBoundaryScaled) # in this expression, rB should be positive.
-  rightBoundary = maxVal + scaling * exp(rightBoundaryScaled) # in this expression, rB should be positive.
+  scaling <- (maxValue - minValue)
+  leftBoundary <- minValue - scaling * exp(leftBoundaryExpansion) # in this expression, rB should be positive.
+  rightBoundary <- maxValue + scaling * exp(rightBoundaryExpansion) # in this expression, rB should be positive.
   
+ 
     
   stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
       psiLogOdds() %>% vanillaBayes(kappa=kappa
@@ -210,6 +217,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
                 , fit=TRUE
                 , optimizing="Objective RMSE"
 ){
+  # Safety check parameters
   if(!(optimizing %in% c("Objective RMSE", "Subjective Log Likelihood"))){
    if(is.character(optimizing)){
      stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or Subjective Log Likelihood")

@@ -14,7 +14,7 @@ test_that("bayesianGonzalezWu gives warnings and return values", {
 
 test_that("bayesianGonzalezWu gives reasonable values", {
   fakeStims <- 1:10/10
-  fakeData <- bayesianGonzalezWu(fakeStims, kappa= -0.5,tauStimuli=786,tauCategory=262, rightBoundaryScaled=-8, mode="prediction")
+  fakeData <- bayesianGonzalezWu(fakeStims, kappa= -0.5,tauStimuli=786,tauCategory=262, rightBoundaryExpansion=-8, mode="prediction")
   expect_lt(max(abs(fakeData- c(0.1001413, 0.2408544, 0.3308149, 0.4097610, 0.4847134, 0.5595559, 0.6377240, 0.7237672, 0.8267800, 0.997780))),
             1e-4)
 })

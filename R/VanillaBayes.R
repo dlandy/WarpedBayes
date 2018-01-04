@@ -6,7 +6,8 @@
 #' @param kappa The location of the category
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
-#' @param responses an optional vector of responses. If responses are given, the return value is the probability of these responses
+#' @param responses an optional vector of responses. Should only be given if mode is "logLikelihoodOfResponses"
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "logLikelihoodOfResponses"
 #' @return A vector containing mean predicted stimulus locations, or the log likelihood of the responses given the model
 #' @details This function assumes that the data are in a metric 
 #' space (-inf, inf), with a single normally distributed generating category (with mean kappa and precision tauCategory). It further assumes a set of stimuli, which are

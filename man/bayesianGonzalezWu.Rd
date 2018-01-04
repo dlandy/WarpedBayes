@@ -4,28 +4,47 @@
 \alias{bayesianGonzalezWu}
 \title{bayesianGonzalezWu}
 \usage{
-bayesianGonzalezWu(stimuli, kappa = psiLogOdds(kappaObjective),
+bayesianGonzalezWu(stimuli, kappa = psiLogOdds(multiCycle(kappaObjective,
+  references = c(leftBoundaryObjective, rightBoundaryObjective))),
   kappaObjective = 0.5, tauStimuli = 1, tauCategory = 1,
-  leftBoundaryObj = 0 - smallValue, rightBoundaryObj = 1 + smallValue,
-  smallValue = 10^-10, leftBoundaryScaled = log(0 - leftBoundaryObj),
-  rightBoundaryScaled = log(rightBoundaryObj - 1), responses = NULL,
-  mode = "prediction")
+  leftBoundaryObjective = 0 - smallValue, rightBoundaryObjective = 1 +
+  smallValue, rightBoundaryExpansion = log((rightBoundaryObjective -
+  maxValue)/(maxValue - minValue)), leftBoundaryExpansion = log((minValue -
+  leftBoundaryObjective)/(maxValue - minValue)), minValue = min(c(stimuli,
+  responses), na.rm = T), maxValue = max(c(stimuli, responses), na.rm = T),
+  smallValue = 10^-10, responses = NULL, mode = "prediction")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
 
-\item{kappa}{The location of the category}
+\item{kappa}{The location of the category in subjective space (from -inf to inf). Defaults to 0}
+
+\item{kappaObjective}{An alternative specification for the kappa location, situated in objective measures.}
 
 \item{tauStimuli}{The precision of the stimulus traces: may be a single number or a vector}
 
 \item{tauCategory}{The precision of the category distribution}
 
-\item{responses}{an optional vector of responses.
+\item{leftBoundaryObjective}{The location (in objective units) of the posited (or fitted) psychological left-hand boundary of legal 
+stimulus values. Defaults to a small amount less than 0}
+
+\item{rightBoundaryObjective}{The location (in objective units) of the posited (or fitted) psychological right-hand boundary of legal 
+stimulus values. Defaults to a small amount more than 1}
+
+\item{rightBoundaryExpansion}{How much beyond the maximum stimulus/response value should the right boundary be expanded?}
+
+\item{leftBoundaryExpansion}{How much beyond the minimium stimulus/response value should the left boundary be expanded?}
+
+\item{minValue}{The lowest range value (in objective units).  Should be at least as small as the smallest stimulus and response.}
+
+\item{maxValue}{The highest range value  (in objective units).  Should be at least as large as the largest stimulus and response.}
+
+\item{smallValue}{a small amount, by which to default boundary expansion}
+
+\item{responses}{an optional vector of responses}
+
+\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "logLikelihoodOfResponses"
 If responses are given, the return value is the logLikelihood of the responses given the parameters}
-
-\item{leftBoundary}{The location of the posited (or fitted) psychological left-hand boundary of the screen. 0}
-
-\item{rightBoundary}{The location of the posited (or fitted) psychological right-hand boundary of the screen. 1}
 }
 \value{
 A vector the transformed stimuli
