@@ -186,6 +186,7 @@ bayesianGonzalezWu <- function(stimuli
       ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
     #plot(stimuli, predictions-stimuli)
     0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
+    #sqrt(mean((predictions-responses)^2))
   } else {
      stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
       psiLogOdds() %>% vanillaBayes(kappa=kappa
