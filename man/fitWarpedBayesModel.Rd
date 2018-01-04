@@ -41,8 +41,8 @@ This format is a convenient one if you plan to attach your model fits (and predi
 }
 \examples{
 a <- fitWarpedBayesModel(bayesianGonzalezWu, 
-                         fakeStims, 
-                         fakeData, 
+                         1:1000/1000, 
+                         bayesianGonzalezWu(1:1000/1000, mode="simulation"), 
                          initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
 }
 \seealso{

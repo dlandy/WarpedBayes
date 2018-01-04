@@ -184,7 +184,7 @@ bayesianGonzalezWu <- function(stimuli
                                     , responses=NULL
                                     , mode="prediction"
       ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
-    #plot(predictions)
+    #plot(stimuli, predictions-stimuli)
     0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
   } else {
      stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
@@ -220,8 +220,8 @@ bayesianGonzalezWu <- function(stimuli
 #' @export
 #' @examples
 #' a <- fitWarpedBayesModel(bayesianGonzalezWu, 
-#'                          fakeStims, 
-#'                          fakeData, 
+#'                          1:1000/1000, 
+#'                          bayesianGonzalezWu(1:1000/1000, mode="simulation"), 
 #'                          initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
 
 fitWarpedBayesModel <- function(model, stimuli, responses
@@ -246,8 +246,8 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
     #print(result)
-    simulation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="simulation")))
-    meanExpectation <- do.call(model, append(append(list(stimuli=stimuli), result$par), list(mode="prediction")))
+    simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="simulation")))
+    meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction")))
   
     a <- tibble::tibble(
       stimulus = stimuli
