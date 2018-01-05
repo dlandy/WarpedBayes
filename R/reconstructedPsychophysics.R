@@ -103,8 +103,8 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                                          , rightBoundaryObjective = 1 + smallValue
                                                          , rightBoundaryExpansion = log((rightBoundaryObjective-maxValue)/(maxValue - minValue))
                                                          , leftBoundaryExpansion  = log((minValue-leftBoundaryObjective )/(maxValue - minValue))
-                                                         , minValue = min(c(stimuli, responses), na.rm=T)
-                                                         , maxValue = max(c(stimuli, responses), na.rm=T)
+                                                         , minValue = min(c(stimuli), na.rm=T)
+                                                         , maxValue = max(c(stimuli), na.rm=T)
                                                          , smallValue = 10^-10
                                                          , responses=NULL
                                                          , center = 0
@@ -140,6 +140,8 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
       multiCycleInverse(references = refs)
     
     #plot(stimuli, predictions-stimuli)
+    if(tauStimuli <0){return(10000)}
+    if(tauCategory<0){return(10000)}
     0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
     #sqrt(mean((predictions-responses)^2))
   } else {
@@ -195,8 +197,8 @@ bayesianGonzalezWu <- function(stimuli
                                , rightBoundaryObjective = 1 + smallValue
                                , rightBoundaryExpansion = log((rightBoundaryObjective-maxValue)/(maxValue - minValue))
                                , leftBoundaryExpansion  = log((minValue-leftBoundaryObjective )/(maxValue - minValue))
-                               , minValue = min(c(stimuli, responses), na.rm=T)
-                               , maxValue = max(c(stimuli, responses), na.rm=T)
+                               , minValue = min(c(stimuli), na.rm=T)
+                               , maxValue = max(c(stimuli), na.rm=T)
                                , smallValue = 10^-10
                                , responses=NULL
                                , mode = "prediction"){
@@ -225,6 +227,8 @@ bayesianGonzalezWu <- function(stimuli
                                     , mode="prediction"
       ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
     #plot(stimuli, predictions-stimuli)
+    if(tauStimuli <0){return(10000)}
+    if(tauCategory<0){return(10000)}
     0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
     #sqrt(mean((predictions-responses)^2))
   } else {

@@ -10,9 +10,9 @@ bayesianGonzalezWu(stimuli, kappa = psiLogOdds(multiCycle(kappaObjective,
   leftBoundaryObjective = 0 - smallValue, rightBoundaryObjective = 1 +
   smallValue, rightBoundaryExpansion = log((rightBoundaryObjective -
   maxValue)/(maxValue - minValue)), leftBoundaryExpansion = log((minValue -
-  leftBoundaryObjective)/(maxValue - minValue)), minValue = min(c(stimuli,
-  responses), na.rm = T), maxValue = max(c(stimuli, responses), na.rm = T),
-  smallValue = 10^-10, responses = NULL, mode = "prediction")
+  leftBoundaryObjective)/(maxValue - minValue)), minValue = min(c(stimuli),
+  na.rm = T), maxValue = max(c(stimuli), na.rm = T), smallValue = 10^-10,
+  responses = NULL, mode = "prediction")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
