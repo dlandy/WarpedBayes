@@ -95,26 +95,66 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
 #' bayesianSpatialMemoryLandyCrawfordCorbin2017(-99:100/100, kappa=1, tauStimuli=2)
 #' bayesianSpatialMemoryLandyCrawfordCorbin2017(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
-                                              , kappaObjective = 0.5
-                                              , kappa=psiLogOdds(kappaObjective)
-                                              , tauStimuli=1
-                                              , tauCategory=1
-                                              , boundary = 1
-                                              , leftBoundary = -1*boundary
-                                              , rightBoundary = boundary
-                                              , center = 0
-                                              , responses="prediction"){
+                                                         , kappa = psiLogOdds(multiCycle(kappaObjective, references=c(leftBoundaryObjective, rightBoundaryObjective)))
+                                                         , kappaObjective = 0.5
+                                                         , tauStimuli = 1
+                                                         , tauCategory = 1
+                                                         , leftBoundaryObjective = -1-smallValue
+                                                         , rightBoundaryObjective = 1 + smallValue
+                                                         , rightBoundaryExpansion = log((rightBoundaryObjective-maxValue)/(maxValue - minValue))
+                                                         , leftBoundaryExpansion  = log((minValue-leftBoundaryObjective )/(maxValue - minValue))
+                                                         , minValue = min(c(stimuli, responses), na.rm=T)
+                                                         , maxValue = max(c(stimuli, responses), na.rm=T)
+                                                         , smallValue = 10^-10
+                                                         , responses=NULL
+                                                         , center = 0
+                                                         , mode = "prediction"){
+  
+  # Safety check parameters
+  if(minValue <= leftBoundaryObjective){
+    warning("leftBoundaryObjective (", leftBoundaryObjective, ") larger than smallest stimulus (", minValue , ")")
+    return(10^5+abs(minValue-leftBoundaryObjective)) # Return a large value for convenience for optim
+  } else if(maxValue > rightBoundaryObjective){
+    warning("rightBoundaryObjective (", rightBoundaryObjective, ") smaller than largest stimulus (", maxValue , ")!")
+    return(10^5+abs(maxValue-rightBoundaryObjective)) # Return a large value for convenience for optim
+  }
+  scaling <- (maxValue - minValue)
+  leftBoundary <- minValue -  exp(leftBoundaryExpansion) 
+  rightBoundary <- maxValue +  exp(rightBoundaryExpansion) 
+  
   refs <- c(leftBoundary, center, rightBoundary)
   kappas <- c(kappa, 1-kappa)
-  stimuli %>% multiCycle(references = refs) %>%
-    psiLogOdds() %>% 
-    vanillaBayes(kappa=kappas
-                 , tauStimuli=tauStimuli
-                 , tauCategory=tauCategory
-                 , responses=multiCycle(responses, references = refs) %>% psiLogOdds()
-                 )  %>% 
-    psiLogOddsInverse() %>% 
-    multiCycleInverse(references = refs)
+  
+  
+  if(mode=="Objective Log Likelihood"){
+    predictions <- stimuli %>% multiCycle(references = refs) %>%
+      psiLogOdds() %>% 
+      vanillaBayes(kappa=kappas
+                   , tauStimuli=tauStimuli
+                   , tauCategory=tauCategory
+                   , responses=NULL
+                   , mode="prediction"
+                   
+      )  %>% 
+      psiLogOddsInverse() %>% 
+      multiCycleInverse(references = refs)
+    
+    #plot(stimuli, predictions-stimuli)
+    0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
+    #sqrt(mean((predictions-responses)^2))
+  } else {
+    stimuli %>% multiCycle(references = refs) %>%
+      psiLogOdds() %>% 
+      vanillaBayes(kappa=kappas
+                   , tauStimuli=tauStimuli
+                   , tauCategory=tauCategory
+                   , responses=multiCycle(responses, references = refs) %>% psiLogOdds()
+                   , mode=mode
+      )  %>% 
+      psiLogOddsInverse() %>% 
+      multiCycleInverse(references = refs)
+  }
+  
 }
 
 
@@ -169,8 +209,8 @@ bayesianGonzalezWu <- function(stimuli
     return(10^5+abs(maxValue-rightBoundaryObjective)) # Return a large value for convenience for optim
   }
   scaling <- (maxValue - minValue)
-  leftBoundary <- minValue - scaling * exp(leftBoundaryExpansion) 
-  rightBoundary <- maxValue + scaling * exp(rightBoundaryExpansion) 
+  leftBoundary <- minValue -  exp(leftBoundaryExpansion) 
+  rightBoundary <- maxValue +  exp(rightBoundaryExpansion) 
   
  
     
