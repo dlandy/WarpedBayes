@@ -10,7 +10,7 @@
 #' @param responses an optional vector of responses.
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
 
-#' @return A vector the transformed stimuli
+#' @return A vector the transformed stimuli 
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
 #' @examples
