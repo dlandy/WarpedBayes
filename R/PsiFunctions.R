@@ -27,7 +27,7 @@ psiLinear.list <- function(stimuli, shift=0, scaling=1){
 }
 
 #' @export
-psiLinear.logLikelihoodOfResponses <- function(stimuli, shift=0, scaling=1){  stimuli}
+psiLinear.likelihoodOfResponses <- function(stimuli, shift=0, scaling=1){  stimuli}
 
 #' @export
 psiLinear.default <- function(stimuli, shift=0, scaling=1){stimuli}
@@ -64,7 +64,7 @@ psiIdentity.default <- function(stimuli, smallValue=10^-5){stimuli}
 
 
 #' @export
-psiIdentity.logLikelihoodOfResponses <- function(stimuli, smallValue=10^-5){stimuli}
+psiIdentity.likelihoodOfResponses <- function(stimuli, smallValue=10^-5){stimuli}
 
 
 #' @export
@@ -101,7 +101,7 @@ psiLog.list <- function(stimuli, smallValue=10^-5){
 }
 
 #' @export
-psiLog.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
+psiLog.likelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
@@ -147,7 +147,7 @@ psiLogOdds.default <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
-psiLogOdds.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
+psiLogOdds.likelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
@@ -185,7 +185,7 @@ psiPrelec <- function (stimuli, smallValue=10^-5) {
 psiPrelec.default <- function(stimuli, smallValue=10^-5){stimuli}
 
 #' @export
-psiPrelec.logLikelihoodOfResponses <- function(stimuli, smallValue){stimuli}
+psiPrelec.likelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
@@ -233,7 +233,7 @@ psiIdentityInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedSt
 
 
 #' @export
-psiIdentityInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiIdentityInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 
 #' @export
@@ -271,7 +271,7 @@ psiLinearInverse.list <- function(warpedStimuli, shift=0, scaling=1){
 psiLogOdds.default <- function(stimuli, smallValue){stimuli}
 
 #' @export
-psiLinearInverse.logLikelihoodOfResponses <- function(warpedStimuli, shift=0, scaling=1){warpedStimuli}
+psiLinearInverse.likelihoodOfResponses <- function(warpedStimuli, shift=0, scaling=1){warpedStimuli}
 
 #' @export
 psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
@@ -309,7 +309,7 @@ psiLogInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli
 
 
 #' @export
-psiLogInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiLogInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
 psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
@@ -347,7 +347,7 @@ psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
 }
 
 #' @export
-psiLogOddsInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiLogOddsInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
 psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
@@ -388,7 +388,7 @@ psiPrelecInverse.list <- function(warpedStimuli, smallValue){
 }
 
 #' @export
-psiPrelecInverse.logLikelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiPrelecInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
 
 #' @export
 psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
@@ -446,7 +446,7 @@ multiCycle.list <- function(stimuli, references=c(0)){
 }
 
 #' @export
-multiCycle.logLikelihoodOfResponses <- function(stimuli, references=c(0)){stimuli}
+multiCycle.likelihoodOfResponses <- function(stimuli, references=c(0)){stimuli}
 
 #' @export
 multiCycle.default <- function(stimuli, references=c(0)){stimuli}
@@ -519,12 +519,15 @@ multiCycleInverse.numeric <- function(warpedStimuli, references=c(0)){sum(warped
 
 
 #' @export
-multiCycleInverse.logLikelihoodOfResponses <- function(warpedStimuli, references=c(0)){sum(warpedStimuli)}
+multiCycleInverse.likelihoodOfResponses <- function(warpedStimuli, references=c(0)){
+  #sum(warpedStimuli)
+  warpedStimuli
+  }
 
 #' @export
 multiCycleInverse.list <- function(warpedStimuli, references=c(0)){
   multiCycleInverseScalingFunction <- function(warpedStimuli, left, right){
-    if("logLikelihoodOfResponses" %in% class(warpedStimuli)){return(sum(warpedStimuli))}
+    if("likelihoodOfResponses" %in% class(warpedStimuli)){return(sum(warpedStimuli))}
     if(left==-Inf && right==Inf){
       warpedStimuli
     } else if(left == -Inf){

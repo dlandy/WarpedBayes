@@ -12,7 +12,8 @@ bayesianGonzalezWu(stimuli, kappa = psiLogOdds(multiCycle(kappaObjective,
   maxValue)/(maxValue - minValue)), leftBoundaryExpansion = log((minValue -
   leftBoundaryObjective)/(maxValue - minValue)), minValue = min(c(stimuli),
   na.rm = T), maxValue = max(c(stimuli), na.rm = T), smallValue = 10^-10,
-  responses = NULL, mode = "prediction")
+  guessRate = 0, guessDensity = -1, responses = NULL,
+  mode = "prediction")
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
@@ -41,9 +42,13 @@ stimulus values. Defaults to a small amount more than 1}
 
 \item{smallValue}{a small amount, by which to default boundary expansion}
 
+\item{guessRate}{The presumed proportion of responses that are pure guesses}
+
+\item{guessDensity}{The normed probability density of any individual response in the guess model (should be 1 over the number of unique responses)}
+
 \item{responses}{an optional vector of responses}
 
-\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "logLikelihoodOfResponses"
+\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
 If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{

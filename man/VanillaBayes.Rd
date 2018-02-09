@@ -16,9 +16,9 @@ vanillaBayes(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
 
 \item{tauCategory}{The precision of the category distribution}
 
-\item{responses}{an optional vector of responses. Should only be given if mode is "logLikelihoodOfResponses"}
+\item{responses}{an optional vector of responses. Should only be given if mode is "likelihoodOfResponses"}
 
-\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "logLikelihoodOfResponses"}
+\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"}
 }
 \value{
 A vector containing mean predicted stimulus locations, or the log likelihood of the responses given the model

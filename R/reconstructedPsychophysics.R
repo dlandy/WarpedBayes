@@ -175,11 +175,13 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
 #' stimulus values. Defaults to a small amount more than 1
 #' @param leftBoundaryExpansion How much beyond the minimium stimulus/response value should the left boundary be expanded?
 #' @param rightBoundaryExpansion How much beyond the maximum stimulus/response value should the right boundary be expanded?
-#' @param smallValue a small amount, by which to default boundary expansion
 #' @param minValue The lowest range value (in objective units).  Should be at least as small as the smallest stimulus and response.
 #' @param maxValue The highest range value  (in objective units).  Should be at least as large as the largest stimulus and response.
+#' @param smallValue a small amount, by which to default boundary expansion
+#' @param guessRate The presumed proportion of responses that are pure guesses
+#' @param guessDensity The normed probability density of any individual response in the guess model (should be 1 over the number of unique responses)
 #' @param responses an optional vector of responses
-#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "logLikelihoodOfResponses"
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @return A vector the transformed stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
@@ -200,8 +202,27 @@ bayesianGonzalezWu <- function(stimuli
                                , minValue = min(c(stimuli), na.rm=T)
                                , maxValue = max(c(stimuli), na.rm=T)
                                , smallValue = 10^-10
+                               , guessRate = 0
+                               , guessDensity = -1
                                , responses=NULL
                                , mode = "prediction"){
+  applyModel <- function(mode="prediction", responses=NULL){
+    a <- stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
+      psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                    , tauStimuli=tauStimuli
+                                    , tauCategory= tauCategory
+                                    , responses=responses %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
+                                      psiLogOdds()
+                                    , mode=mode
+      ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+
+    a
+    
+  }
+  robustLog <- function(x, smallValue=10^-322){
+    x[x<=smallValue] <- smallValue
+    log(x)
+  } 
   # Safety check parameters
   if(minValue <= leftBoundaryObjective){
     warning("leftBoundaryObjective (", leftBoundaryObjective, ") larger than smallest stimulus (", minValue , ")")
@@ -216,29 +237,24 @@ bayesianGonzalezWu <- function(stimuli
   
  
     
- 
-  if(mode=="Objective Log Likelihood"){
-    
-    predictions <- stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
-      psiLogOdds() %>% vanillaBayes(kappa=kappa
-                                    , tauStimuli=tauStimuli
-                                    , tauCategory= tauCategory
-                                    , responses=NULL
-                                    , mode="prediction"
-      ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
-    #plot(stimuli, predictions-stimuli)
+  if(mode=="Guessing Model"){
+    if(guessDensity<0){stop("bayesianGonzalez Wu must be given a positive and explicit guess density if the guessing model is used")}
+    modelLikelihoods <- applyModel("likelihoodOfResponses", responses=responses)
+    guessLikelihoods <- rep(guessDensity, length(stimuli))
+    if(tauStimuli <0){return(10^12)}
+    if(tauCategory<0){return(10^12)}
+    if(kappa<0){return(10^12)}
+
+    0-sum(log((1-guessRate)*modelLikelihoods + guessRate*(guessLikelihoods)))
+  } else if(mode=="Objective Log Likelihood"){
+    predictions <- applyModel("prediction")
     if(tauStimuli <0){return(10000)}
     if(tauCategory<0){return(10000)}
+    if(kappa<0){return(10^12)}
     0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
-    #sqrt(mean((predictions-responses)^2))
+    
   } else {
-     stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
-      psiLogOdds() %>% vanillaBayes(kappa=kappa
-                                    , tauStimuli=tauStimuli
-                                    , tauCategory= tauCategory
-                                    , responses=(responses  %>% multiCycle(c(leftBoundary, rightBoundary)) %>% psiLogOdds)
-                                    , mode=mode
-      ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+     applyModel(mode)
   }
 }
 
@@ -277,7 +293,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
                 , optimizing="Objective Log Likelihood"
 ){
   # Safety check parameters
-  if(!(optimizing %in% c("Objective Log Likelihood", "Subjective Log Likelihood"))){
+  if(!(optimizing %in% c("Objective Log Likelihood", "Subjective Log Likelihood", "Guessing Model"))){
    if(is.character(optimizing)){
      stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or Subjective Log Likelihood")
    } else {
@@ -290,7 +306,6 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   }
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
-    #print(result)
     simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="simulation")))
     meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction")))
   

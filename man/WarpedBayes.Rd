@@ -8,4 +8,6 @@
 \description{
 This package Implement several classic descriptive psychophysics laws as 
 compositions of Bayes law and simple, principled transformations.
+To see a full list of functions, do ls("package:WarpedBayes")
+or help(package="WarpedBayes")
 }
