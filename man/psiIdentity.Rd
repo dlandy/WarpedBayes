@@ -4,7 +4,7 @@
 \alias{psiIdentity}
 \title{psiIdentity}
 \usage{
-psiIdentity(stimuli, smallValue = 10^-5)
+psiIdentity(stimuli, smallValue = 10^-30)
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf}

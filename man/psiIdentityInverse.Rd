@@ -4,7 +4,7 @@
 \alias{psiIdentityInverse}
 \title{psiIdentityInverse}
 \usage{
-psiIdentityInverse(warpedStimuli, smallValue = 10^-5)
+psiIdentityInverse(warpedStimuli, smallValue = 10^-30)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}

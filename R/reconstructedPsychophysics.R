@@ -109,6 +109,11 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                                          , responses=NULL
                                                          , center = 0
                                                          , mode = "prediction"){
+  robustLog <- function(x, smallValue=10^-322){
+    x[x<=smallValue] <- smallValue
+    x[is.na(x)] <- smallValue
+    log(x)
+  } 
   
   # Safety check parameters
   if(minValue <= leftBoundaryObjective){
@@ -142,7 +147,10 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
     #plot(stimuli, predictions-stimuli)
     if(tauStimuli <0){return(10000)}
     if(tauCategory<0){return(10000)}
-    0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
+   # print(predictions)
+  #  print(stimuli)
+  #  print(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory)))
+    0-sum(robustLog(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
     #sqrt(mean((predictions-responses)^2))
   } else {
     stimuli %>% multiCycle(references = refs) %>%
@@ -205,19 +213,40 @@ bayesianGonzalezWu <- function(stimuli
                                , guessRate = 0
                                , guessDensity = -1
                                , responses=NULL
+                               , stimulusGrid = unique(stimuli)
+                               , responseGrid = unique(responses)
                                , mode = "prediction"){
   applyModel <- function(mode="prediction", responses=NULL){
     a <- stimuli %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
       psiLogOdds() %>% vanillaBayes(kappa=kappa
                                     , tauStimuli=tauStimuli
                                     , tauCategory= tauCategory
-                                    , responses=responses %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
-                                      psiLogOdds()
+                                    , responses=(responses %>% 
+                                                multiCycle(c(leftBoundary, rightBoundary)) %>%  
+                                                psiLogOdds())
                                     , mode=mode
       ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
 
     a
     
+  }
+  normalizeModel <- function(stimulus){
+    leftBoundary <- minValue - exp(leftBoundaryExpansion)
+    rightBoundary <- maxValue + exp(rightBoundaryExpansion)
+    scaledGrid <- leftBoundary + responseGrid*(rightBoundary-leftBoundary)
+
+    normalizationDist <- rep(stimulus, length(responseGrid)) %>% multiCycle(c(leftBoundary, rightBoundary)) %>%  
+      psiLogOdds() %>% vanillaBayes(kappa=kappa
+                                    , tauStimuli=tauStimuli
+                                    , tauCategory= tauCategory
+                                    , responses=(scaledGrid %>% 
+                                                   multiCycle(c(leftBoundary, rightBoundary)) %>%  
+                                                   psiLogOdds())
+                                    , mode="likelihoodOfResponses"
+      ) %>% psiLogOddsInverse() %>%  multiCycleInverse(c(leftBoundary, rightBoundary)) 
+    binWidth <- (max(scaledGrid)-min(scaledGrid))/length(scaledGrid)
+    
+    sum(normalizationDist*binWidth)
   }
   robustLog <- function(x, smallValue=10^-322){
     x[x<=smallValue] <- smallValue
@@ -234,27 +263,44 @@ bayesianGonzalezWu <- function(stimuli
   scaling <- (maxValue - minValue)
   leftBoundary <- minValue -  exp(leftBoundaryExpansion) 
   rightBoundary <- maxValue +  exp(rightBoundaryExpansion) 
-  
- 
+
     
   if(mode=="Guessing Model"){
-    if(guessDensity<0){stop("bayesianGonzalez Wu must be given a positive and explicit guess density if the guessing model is used")}
-    modelLikelihoods <- applyModel("likelihoodOfResponses", responses=responses)
-    guessLikelihoods <- rep(guessDensity, length(stimuli))
+    #if(guessDensity<0){stop("bayesianGonzalez Wu must be given a positive and explicit guess density if the guessing model is used")}
     if(tauStimuli <0){return(10^12)}
     if(tauCategory<0){return(10^12)}
-    if(kappa<0){return(10^12)}
-
+    if(guessRate<0 | guessRate > 1){return(10^12)}
+    if(guessDensity<0 ){return(10^12)}
+    if(rightBoundaryExpansion>10 | leftBoundaryExpansion > 10){return(10^12)}
+    norms <- stimulusGrid
+    norms <- unlist(lapply(stimulusGrid, normalizeModel))
+    names(norms) <- stimulusGrid
+    
+    
+    predictions <- applyModel("prediction")
+    
+#    modelLikelihoods <- pmax(10^-250, applyModel("likelihoodOfResponses", responses=responses)/(norms[(as.character(stimuli))]))
+    modelLikelihoods <- pmax(10^-250, applyModel("likelihoodOfResponses", responses=responses)/(rightBoundary-leftBoundary))
+    
+    #guessLikelihoods <- (dnorm(predictions-responses, sd=guessDensity))/1000
+    guessLikelihoods <- rep(guessDensity, length(stimuli))
+    print(0-sum(log((1-guessRate)*modelLikelihoods + guessRate*(guessLikelihoods))))
     0-sum(log((1-guessRate)*modelLikelihoods + guessRate*(guessLikelihoods)))
   } else if(mode=="Objective Log Likelihood"){
     predictions <- applyModel("prediction")
     if(tauStimuli <0){return(10000)}
     if(tauCategory<0){return(10000)}
-    if(kappa<0){return(10^12)}
     0-sum(log(dnorm(predictions-responses, sd=1/(tauStimuli+tauCategory))))
     
+  } else if(mode=="normalize"){
+      norms <- stimulusGrid
+
+      norms <- unlist(lapply(stimulusGrid, normalizeModel))
+      names(norms) <- stimulusGrid
+      
+      norms
   } else {
-     applyModel(mode)
+     applyModel(mode, responses=responses)
   }
 }
 
@@ -308,7 +354,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
     simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="simulation")))
     meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction")))
-  
+    print(result)
     a <- tibble::tibble(
       stimulus = stimuli
       , response = responses

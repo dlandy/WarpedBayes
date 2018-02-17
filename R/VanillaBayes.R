@@ -82,8 +82,8 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
       rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
   } else if(mode=="likelihoodOfResponses") {
     if(tauStimuli <= 0 | tauCategory <=0){return(999999)} # large value if tau's go negative
-    #logLikelihoods <- robustLog(dnorm(predictions-responses, sd=1/sqrt(tauIntegration)))
-    #result <- 0-sum(logLikelihoods)
+    
+    
     result <- dnorm(predictions-responses, sd=1/sqrt(tauIntegration))
     class(result) <- append("likelihoodOfResponses", class(result))
     

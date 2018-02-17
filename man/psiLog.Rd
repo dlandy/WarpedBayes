@@ -4,7 +4,7 @@
 \alias{psiLog}
 \title{psiLog}
 \usage{
-psiLog(stimuli, smallValue = 10^-5)
+psiLog(stimuli, smallValue = 10^-30)
 }
 \arguments{
 \item{stimuli}{a vector of positive stimuli, between 0 and inf}

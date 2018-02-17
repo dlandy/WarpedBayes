@@ -4,7 +4,7 @@
 \alias{psiLogOdds}
 \title{psiLogOdds}
 \usage{
-psiLogOdds(stimuli, smallValue = 10^-5)
+psiLogOdds(stimuli, smallValue = 10^-30)
 }
 \arguments{
 \item{stimuli}{a vector of positive stimuli, between 0 and inf}

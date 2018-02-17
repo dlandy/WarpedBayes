@@ -50,25 +50,25 @@ psiLinear.numeric <- function(stimuli, shift=0, scaling=1){
 #' @export
 #' @examples
 #' psiIdentity(-10:10)
-psiIdentity <- function (stimuli, smallValue=10^-5) {
+psiIdentity <- function (stimuli, smallValue=10^-30) {
   UseMethod("psiIdentity", stimuli)
 }
 
 #' @export
-psiIdentity.list <- function(stimuli, smallValue=10^-5){
+psiIdentity.list <- function(stimuli, smallValue=10^-30){
   mapply(psiIdentity, stimuli, SIMPLIFY=FALSE)
 }
 
 #' @export
-psiIdentity.default <- function(stimuli, smallValue=10^-5){stimuli}
+psiIdentity.default <- function(stimuli, smallValue=10^-30){stimuli}
 
 
 #' @export
-psiIdentity.likelihoodOfResponses <- function(stimuli, smallValue=10^-5){stimuli}
+psiIdentity.likelihoodOfResponses <- function(stimuli, smallValue=10^-30){stimuli}
 
 
 #' @export
-psiIdentity.numeric <- function(stimuli, smallValue=10^-5){
+psiIdentity.numeric <- function(stimuli, smallValue=10^-30){
   stimuli
 }
 
@@ -91,12 +91,12 @@ psiIdentity.numeric <- function(stimuli, smallValue=10^-5){
 #' 1:1000 %>% psiLog() %>% 
 #'     vanillaBayes() %>% 
 #'     psiLogInverse()  # Implements Stevens Power Law
-psiLog <- function (stimuli, smallValue=10^-5) {
+psiLog <- function (stimuli, smallValue=10^-30) {
   UseMethod("psiLog", stimuli)
 }
 
 #' @export
-psiLog.list <- function(stimuli, smallValue=10^-5){
+psiLog.list <- function(stimuli, smallValue=10^-30){
   mapply(psiLog, stimuli, smallValue, SIMPLIFY=FALSE)
 }
 
@@ -110,7 +110,7 @@ psiLog.default <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
-psiLog.numeric <- function(stimuli, smallValue=10^-5){
+psiLog.numeric <- function(stimuli, smallValue=10^-30){
   stimuli[stimuli==0] <- smallValue
   log(stimuli)
 }
@@ -132,12 +132,12 @@ psiLog.numeric <- function(stimuli, smallValue=10^-5){
 #' (0:1000/1000) %>% psiLogOdds() %>%
 #'      vanillaBayes() %>% 
 #'      psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOdds <- function (stimuli, smallValue=10^-5) {
+psiLogOdds <- function (stimuli, smallValue=10^-30) {
   UseMethod("psiLogOdds", stimuli)
 }
 
 #' @export
-psiLogOdds.list <- function(stimuli, smallValue=10^-5){
+psiLogOdds.list <- function(stimuli, smallValue=10^-30){
   mapply(psiLogOdds, stimuli, smallValue, SIMPLIFY=FALSE)
 }
 
@@ -151,7 +151,7 @@ psiLogOdds.likelihoodOfResponses <- function(stimuli, smallValue){stimuli}
 
 
 #' @export
-psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
+psiLogOdds.numeric <- function(stimuli, smallValue=10^-30){
   stimuli[stimuli>= 1-smallValue] <- 1-smallValue
   stimuli[stimuli <= smallValue] <- smallValue
   d <- log(stimuli/(1-stimuli))
@@ -177,12 +177,12 @@ psiLogOdds.numeric <- function(stimuli, smallValue=10^-5){
 #' @examples
 #' psiPrelec(1:100/100)
 #' (0:1000/1000) %>% psiPrelec() %>% vanillaBayes() %>% psiPrelecInverse()  # Implements Prelec, 1998
-psiPrelec <- function (stimuli, smallValue=10^-5) {
+psiPrelec <- function (stimuli, smallValue=10^-30) {
   UseMethod("psiPrelec", stimuli)
 }
 
 #' @export
-psiPrelec.default <- function(stimuli, smallValue=10^-5){stimuli}
+psiPrelec.default <- function(stimuli, smallValue=10^-30){stimuli}
 
 #' @export
 psiPrelec.likelihoodOfResponses <- function(stimuli, smallValue){stimuli}
@@ -194,7 +194,7 @@ psiPrelec.list <- function(stimuli, smallValue){
 }
 
 #' @export
-psiPrelec.numeric <- function(stimuli, smallValue=10^-5){
+psiPrelec.numeric <- function(stimuli, smallValue=10^-30){
   stimuli[stimuli==1] <- 1-smallValue
   stimuli[stimuli==0] <- smallValue
   d <- log(log(1/stimuli))
@@ -219,25 +219,25 @@ psiPrelec.numeric <- function(stimuli, smallValue=10^-5){
 #' @export
 #' @examples
 #' psiIdentityInverse(-10:10)
-psiIdentityInverse <- function (warpedStimuli, smallValue=10^-5) {
+psiIdentityInverse <- function (warpedStimuli, smallValue=10^-30) {
 UseMethod("psiIdentityInverse", warpedStimuli)
 }
 
 #' @export
-psiIdentityInverse.list <- function(warpedStimuli, smallValue=10^-5){
+psiIdentityInverse.list <- function(warpedStimuli, smallValue=10^-30){
   mapply(psiIdentityInverse, warpedStimuli, SIMPLIFY=FALSE)
 }
 
 #' @export
-psiIdentityInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiIdentityInverse.default <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 
 #' @export
-psiIdentityInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiIdentityInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 
 #' @export
-psiIdentityInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
+psiIdentityInverse.numeric <- function(warpedStimuli, smallValue=10^-30){
   warpedStimuli
 }
 
@@ -295,24 +295,24 @@ psiLinearInverse.numeric <- function(warpedStimuli, shift=0, scaling=1){
 #' psiLogInverse(psiLog(1:100)) # returns 1:100
 #' psiLog(1:100) %>% psiLogInverse()
 #' 1:1000 %>% psiLog() %>% vanillaBayes() %>% psiLogInverse()  # Implements Stevens Power Law
-psiLogInverse <- function (warpedStimuli, smallValue=10^-5) {
+psiLogInverse <- function (warpedStimuli, smallValue=10^-30) {
   UseMethod("psiLogInverse", warpedStimuli )
 }
 
 #' @export
-psiLogInverse.list <- function(warpedStimuli, smallValue=10^-5){
+psiLogInverse.list <- function(warpedStimuli, smallValue=10^-30){
   mapply(psiLogInverse, warpedStimuli, smallValue, SIMPLIFY=FALSE)
 }
 
 #' @export
-psiLogInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiLogInverse.default <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 
 #' @export
-psiLogInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiLogInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 #' @export
-psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
+psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-30){
   exp(warpedStimuli)
 }
 
@@ -334,23 +334,23 @@ psiLogInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' (0:1000/1000) %>% psiLogOdds() %>% 
 #'     vanillaBayes() %>% 
 #'     psiLogOddsInverse()  # Implements Gonzales & Wu, 1996
-psiLogOddsInverse <- function (warpedStimuli, smallValue=10^-5) {
+psiLogOddsInverse <- function (warpedStimuli, smallValue=10^-30) {
   UseMethod("psiLogOddsInverse", warpedStimuli)
 }
 
 #' @export
-psiLogOddsInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiLogOddsInverse.default <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 #' @export
-psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-5){
+psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-30){
   mapply(psiLogOddsInverse, warpedStimuli, smallValue, SIMPLIFY=FALSE)
 }
 
 #' @export
-psiLogOddsInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiLogOddsInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 #' @export
-psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
+psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-30){
   e <- exp(warpedStimuli) 
   d <- e/(1+e)
   d
@@ -375,12 +375,12 @@ psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
 #' (0:1000/1000) %>% psiPrelec() %>% 
 #'     vanillaBayes() %>% 
 #'     psiPrelecInverse()  # Implements Prelec, 1998
-psiPrelecInverse <- function (warpedStimuli, smallValue=10^-5) {
+psiPrelecInverse <- function (warpedStimuli, smallValue=10^-30) {
   UseMethod("psiPrelecInverse", warpedStimuli)
 }
 
 #' @export
-psiPrelecInverse.default <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiPrelecInverse.default <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 #' @export
 psiPrelecInverse.list <- function(warpedStimuli, smallValue){
@@ -388,10 +388,10 @@ psiPrelecInverse.list <- function(warpedStimuli, smallValue){
 }
 
 #' @export
-psiPrelecInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-5){warpedStimuli}
+psiPrelecInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
 
 #' @export
-psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-5){
+psiPrelecInverse.numeric <- function(warpedStimuli, smallValue=10^-30){
   exp(-exp(warpedStimuli))
   
 }
@@ -520,7 +520,6 @@ multiCycleInverse.numeric <- function(warpedStimuli, references=c(0)){sum(warped
 
 #' @export
 multiCycleInverse.likelihoodOfResponses <- function(warpedStimuli, references=c(0)){
-  #sum(warpedStimuli)
   warpedStimuli
   }
 
@@ -545,6 +544,166 @@ multiCycleInverse.list <- function(warpedStimuli, references=c(0)){
          , references[1:length(references)-1]
          , references[2:length(references)]
          , SIMPLIFY=TRUE)
+         , recursive=FALSE
+         , use.names=FALSE)
+}  
+
+
+
+
+
+
+# 
+
+#' unicycle
+#' 
+#' Divides a mapping, of any sort (bounded, semi-bounded, or unbounded) into a finite number of distinct regions,
+#' by creating 'references' inside the space. Functionally, unicycle simply divides a vector of stimuli into 
+#' A list of vectors of values based on their proportional distances between two references.  Usually, these
+#' are then fed into a psi function which creates a unbounded space containing multiple infinite unbounded regions
+#' which are conceptually adjacent.
+#' 
+#' Unicycling is a simplification of multicycling. Unicycling (and its inverse), like multicycling,
+#  carves spaces into a region that is bounded at lynchpin points.  These can include 'inf' and '-inf'.  
+# The difference between unicycle and multicycle is that while multicycle divides regions up into 
+# similar kinds of adjacent spaces, unicycle puts 0 probability density in regions outside the focal region. 
+
+#'
+#' For instance, a spatial region |----------------|
+#' might be divided into three regions
+#'  |=======||--------||=========|
+#'  Where the central |--------| region is turned into a preLec function, and the 
+#'  regions outside are 'no op' regions, in whihc no predictions can be made, and no probability density is placed 
+#'  (or, to keep things from underflowying, very very little).
+#'  with a command like -10:10 %>% uniCycle(0) %>% psiPrelec
+#' @param stimuli a vector of stimuli, between -inf and inf, or a list of vectors of stimuli
+#' @param references A vector of values.  This should include -Inf and Inf, but these are implicitly added
+#' if they are omitted
+#' @return A vector containing warped stimuli, or a list of vectors
+#' @keywords psi perceptual tranformations
+#' @seealso psiIdentity, multiCycle
+#' @export
+#' @examples
+#' uniCycle(-99:100, c(-100, 0, 100))
+#' (-99:100/100) %>% multiCycle(references= c(-1, 0, 1)) %>% 
+#'     psiLogOdds() %>% vanillaBayes() %>% 
+#'     psiLogOddsInverse() %>% multiCycleInverse(references=c(-1, 0, 1)) 
+#'     # Implements Landy et al's model of one-dimensional spatial memory, with fixed boundaries
+#' plot(-99:100, unlist(multiCycle(-99:100, c(-100, -50, 0, 50, 100))))
+#' plot(-99:100/100, (-99:100/100) %>% multiCycle(references= c(-1, 0, 1)) %>% 
+#'     psiLogOdds() %>% vanillaBayes(kappa=c(-.8, .8)) %>% 
+#'     psiLogOddsInverse() %>%
+#'      uniCycleInverse(references=c(-1, 0, 1))-(-99:100/100),
+#'           ylab="bias", xlab="stimulus");abline(0,0)
+uniCycle <- function (stimuli, references=c(0)) {
+  UseMethod("uniCycle", stimuli)
+}
+
+#' @export
+uniCycle.list <- function(stimuli, references=c(0)){
+  mapply(uniCycle, stimuli, references, SIMPLIFY=FALSE)
+}
+
+#' @export
+uniCycle.likelihoodOfResponses <- function(stimuli, references=c(0)){stimuli}
+
+#' @export
+uniCycle.default <- function(stimuli, references=c(0)){stimuli}
+
+
+#' @export
+uniCycle.numeric <- function(stimuli, references=c(0)){
+  uniCycleScalingFunction <- function(stimuli, left, right){
+    if(left==-Inf && right==Inf){
+      stimuli
+    } else if(left == -Inf){
+      stimuli - right
+    } else if(right == Inf){
+      stimuli - left
+    } else {
+      (stimuli-left)/(right-left)    
+    }
+  }
+  
+  if(references[1]!= -Inf){references <- c(-Inf, references)}
+  if(references[length(references)]!= Inf){references <- c(references, Inf)}
+  brokenVersion <- split(stimuli, cut(stimuli,breaks=references, ordered_result=TRUE))
+  mapply(uniCycleScalingFunction,
+         brokenVersion
+         , references[1:length(references)-1]
+         , references[2:length(references)]
+         , SIMPLIFY=FALSE)
+}  
+
+
+
+#' uniCycleInverse
+#' 
+#' recombines a mapping, of any sort (bounded, semi-bounded, or unbounded) into single region,
+#' by eliminating 'references' inside the space. Functionally, uniCycleInverse simply undoes a vector of stimuli into 
+#'
+#' For instance, a spatial region |----------------|
+#' might be divided into three regions
+#'  |=======||--------||=========|
+
+#'  And the middle be turned into an unbounded Prelec region
+#'  |=======|<-------->|=========|
+#'  with a command like -10:10 %>% unicycle(0) %>% psiPrelec
+#'  uniCycleInverse would then recombine these values into a single range.
+#'
+#'  KEY LIMITATION: Right now, uniCycleInverse can only 'handle' one layer of recursion. That is, you can't make calls like
+#'  -10:10 %>% uniCycle %>% uniCycle %> uniCycleInverse %>% uniCycleInverse
+#'  . Sorry.
+#' @param warpedStimuli a vector of stimuli, between -inf and inf, or a list of vectors of stimuli
+#' @param references A vector of values.  This should include -Inf and Inf, but these are implicitly added
+#' if they are omitted
+#' @return A vector containing warped stimuli, or a list of vectors
+#' @keywords psi perceptual tranformations
+#' @seealso psiIdentity, psiLogOdds, psiPrelec, psiLog, psiLinearInverse
+#' @export
+#' @examples
+#' uniCycle(-99:100, c(-100, 0, 100))
+#' plot(-99:100, unlist(uniCycle(-99:100, c(-100, -50, 0, 50, 100))))
+#' (-99:100/100) %>% uniCycle(-1, 0, 1) %>% 
+#'     psiLogOdds() %>% vanillaBayes() %>% 
+#'     psiLogOddsInverse() %>% 
+#'     uniCycleInverse(-1, 0, 1) # Implements Landy et al's model 
+#'     # of one-dimensional spatial memory, with fixed boundaries
+uniCycleInverse <- function (warpedStimuli, references=c(0)) {
+  UseMethod("uniCycleInverse", warpedStimuli)
+}
+
+#' @export
+uniCycleInverse.numeric <- function(warpedStimuli, references=c(0)){sum(warpedStimuli)}
+
+
+
+#' @export
+uniCycleInverse.likelihoodOfResponses <- function(warpedStimuli, references=c(0)){
+  warpedStimuli
+}
+
+#' @export
+uniCycleInverse.list <- function(warpedStimuli, references=c(0)){
+  uniCycleInverseScalingFunction <- function(warpedStimuli, left, right){
+    if("likelihoodOfResponses" %in% class(warpedStimuli)){return(sum(warpedStimuli))}
+    if(left==-Inf && right==Inf){
+      warpedStimuli
+    } else if(left == -Inf){
+      warpedStimuli + right
+    } else if(right == Inf){
+      warpedStimuli + left
+    } else {
+      warpedStimuli*(right-left) + left
+    }
+  }
+  if(references[1]!= -Inf){references <- c(-Inf, references)}
+  if(references[length(references)]!= Inf){references <- c(references, Inf)}
+  unlist(mapply(uniCycleInverseScalingFunction,
+                warpedStimuli 
+                , references[1:length(references)-1]
+                , references[2:length(references)]
+                , SIMPLIFY=TRUE)
          , recursive=FALSE
          , use.names=FALSE)
 }  

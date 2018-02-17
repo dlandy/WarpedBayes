@@ -4,7 +4,7 @@
 \alias{psiPrelec}
 \title{psiPrelec}
 \usage{
-psiPrelec(stimuli, smallValue = 10^-5)
+psiPrelec(stimuli, smallValue = 10^-30)
 }
 \arguments{
 \item{stimuli}{a vector of positive stimuli, between 0 and inf}

@@ -4,7 +4,7 @@
 \alias{psiLogInverse}
 \title{psiLogInverse}
 \usage{
-psiLogInverse(warpedStimuli, smallValue = 10^-5)
+psiLogInverse(warpedStimuli, smallValue = 10^-30)
 }
 \arguments{
 \item{warpedStimuli}{a vector of stimuli, between -inf and inf}
