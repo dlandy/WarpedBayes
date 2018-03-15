@@ -262,7 +262,7 @@ bayesianStevensPowerLaw <- function(stimuli
                                     , kappaObjective = 1
                                     , kappa=psiLog(kappaObjective), tauStimuli=1, tauCategory=1, responses=NULL
                                     , mode ="prediction"
-                                    , responseGrid = sort(unique(responses))
+                                    , responseGrid = NULL
 ){
   if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
@@ -312,7 +312,7 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
                                               , rightBoundary = boundary
                                               , center = 0
                                               , responses="prediction"
-                                              , responseGrid = sort(unique(responses))
+                                              , responseGrid = NULL
                                               ){
   if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
@@ -370,7 +370,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                                          , responses=NULL
                                                          , center = 0
                                                          , mode = "prediction"
-                                                         , responseGrid = sort(unique(responses))
+                                                         , responseGrid = NULL
                                                          ){
   if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")

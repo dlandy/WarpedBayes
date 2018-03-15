@@ -12,7 +12,7 @@ bayesianGonzalezWu(stimuli, kappa = psiLogOdds(multiCycle(kappaObjective,
   rightBoundaryExpansion = NULL, leftBoundaryExpansion = NULL,
   minValue = min(c(stimuli, responses), na.rm = T),
   maxValue = max(c(stimuli, responses), na.rm = T), smallValue = 10^-10,
-  mode = "prediction", responseGrid = sort(unique(responses)))
+  mode = "prediction", responseGrid = NULL)
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}

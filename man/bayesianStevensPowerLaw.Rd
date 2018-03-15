@@ -6,8 +6,7 @@
 \usage{
 bayesianStevensPowerLaw(stimuli, kappaObjective = 1,
   kappa = psiLog(kappaObjective), tauStimuli = 1, tauCategory = 1,
-  responses = NULL, mode = "prediction",
-  responseGrid = sort(unique(responses)))
+  responses = NULL, mode = "prediction", responseGrid = NULL)
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}

@@ -7,8 +7,7 @@
 bayesianSpatialMemoryHuttenlocher(stimuli, kappaObjective = 0.5,
   kappa = psiLogOdds(kappaObjective), tauStimuli = 1, tauCategory = 1,
   boundary = 1, leftBoundary = -1 * boundary, rightBoundary = boundary,
-  center = 0, responses = "prediction",
-  responseGrid = sort(unique(responses)))
+  center = 0, responses = "prediction", responseGrid = NULL)
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, in public units between -inf and inf}
