@@ -1,14 +1,22 @@
 context("bayesianReconstructionFunctions")
 
 test_that("bayesianGonzalezWu gives warnings and return values", {
-  stims <- -10:10
-  
-  #expect_warning(bayesianGonzalezWu(-5:1/2, kappa=0.8,tauStimuli=400,tauCategory=100, mode = "simulation")
-   #              , "leftBoundaryObjective .* larger than smallest stimulus")
-  #expect_warning(bayesianGonzalezWu(1:5/2, kappa=0.8,tauStimuli=400,tauCategory=100, mode= "simulation")
-    #             , "rightBoundaryObjective .* smaller than largest stimulus")
+  a <- with(boundedProportionSimulatedData,
+            fitWarpedBayesModel(bayesianGonzalezWu, 
+                              stimulus
+                           ,  response
+                           , initialPars = c(kappa=1, tauStimuli=10, tauCategory=10, leftBoundaryExpansion=-1, rightBoundaryExpansion=-1)
+                           , responseGrid = sort(unique(response))
+                           , fixedPars=c() ))
+  expect_lt(a$kappa[1], 0.2)
+  expect_gt(a$kappa[1], 0.1)
+  expect_lt(a$tauStimuli[1], 450)
+  expect_gt(a$tauStimuli[1], 350)
+  expect_lt(a$tauCategory[1], 120)
+  expect_gt(a$tauCategory[1], 80)
   
 })
+
 
 
 
@@ -19,3 +27,21 @@ test_that("bayesianGonzalezWu gives reasonable values", {
             1e-4)
 })
 
+
+
+test_that("bayesianSpatialMemoryLandyCrawfordCorbin2017 gives warnings and return values", {
+  a <- with(spatialMemorySimulatedData,
+            fitWarpedBayesModel(bayesianSpatialMemoryLandyCrawfordCorbin2017, 
+                                stimulus
+                                ,  response
+                                , initialPars = c(kappa=1, tauStimuli=10, tauCategory=10, leftBoundaryExpansion=-1, rightBoundaryExpansion=-1)
+                                , responseGrid = sort(unique(response))
+                                , fixedPars=c() ))
+  expect_lt(a$kappa[1], 0.55)
+  expect_gt(a$kappa[1], 0.45)
+  expect_lt(a$tauStimuli[1], 90)
+  expect_gt(a$tauStimuli[1], 65)
+  expect_lt(a$tauCategory[1], 30)
+  expect_gt(a$tauCategory[1], 15)
+  
+})

@@ -133,7 +133,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   # Safety check parameters
   if(!(optimizing %in% c("subjectiveLogLikelihood"))){
    if(is.character(optimizing)){
-     stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or subjectiveLogLikelihood")
+     stop("I don't know how to optimize ", optimizing, ". Please give me subjectiveLogLikelihood")
    } else {
      stop("Invalid value for optimizing. Please give me either Objective RMSE or subjectiveLogLikelihood")
    }
@@ -145,13 +145,15 @@ fitWarpedBayesModel <- function(model, stimuli, responses
     fitFunction <- function(pars){
       negSumLogs(do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), 
                                        list(responses=responses, mode=optimizing, responseGrid=responseGrid))))
+
+      
   }
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
     simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), 
                                         list(mode="simulation")))
     meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction")))
-    print(result)
+    #print(result)
     a <- tibble::tibble(
       stimulus = stimuli
       , response = responses
@@ -313,6 +315,7 @@ bayesianStevensPowerLaw <- function(stimuli
 #' bayesianSpatialMemoryHuttenlocher(-99:100/100, kappa=1, tauStimuli=2)
 #' bayesianSpatialMemoryHuttenlocher(1:100, kappa=1, tauStimuli=2, responses=2*(1:100)^.9)
 bayesianSpatialMemoryHuttenlocher <- function(stimuli
+                                              , responses=NULL
                                               , kappaObjective = 0.5
                                               , kappa=psiLogOdds(kappaObjective)
                                               , tauStimuli=1
@@ -321,7 +324,7 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
                                               , leftBoundary = -1*boundary
                                               , rightBoundary = boundary
                                               , center = 0
-                                              , responses="prediction"
+                                              , mode="prediction"
                                               , responseGrid = NULL
                                               ){
   if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
@@ -335,6 +338,7 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
                  , tauCategory=tauCategory
                  , responses   = multiCycle(responses,    references = refs)
                  , responseGrid= multiCycle(responseGrid, references = refs)
+                 , mode=mode
                  )  %>% 
     multiCycleInverse(references = refs)
 }
@@ -387,7 +391,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
     responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
   }
   leftBoundary  <- ifelse(is.null(leftBoundaryExpansion ), leftBoundaryObjective,   minValue -  exp(leftBoundaryExpansion ) )
-  rightBoundary <- ifelse(is.null(rightBoundaryExpansion), rightBoundaryObjective,  minValue -  exp(rightBoundaryExpansion) )
+  rightBoundary <- ifelse(is.null(rightBoundaryExpansion), rightBoundaryObjective,  maxValue +  exp(rightBoundaryExpansion) )
   refs <- c(leftBoundary, center, rightBoundary)
   kappas <- c(kappa, 1-kappa)
   stimuli %>% multiCycle(references = refs) %>%

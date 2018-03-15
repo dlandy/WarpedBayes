@@ -60,7 +60,21 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
 
 discreteNorm <- 
   function(mean, sd, responseIndex, responseGrid){
-    pnorm(responseGrid[responseIndex+1]
+    if(length(na.omit(responseGrid[responseIndex+1]))>0){
+      
+      if(max(is.na(responseGrid[responseIndex+1]))){
+        warning("some values of the responseGrid[responseIndex+1] were NaN!", responseGrid[responseIndex+1])
+        return(rep(0, length(responseGrid[responseIndex+1])))
+        
+      }  else if(max(is.na(responseGrid[responseIndex]))){
+        warning("some values of the responseGrid[responseIndex] were NaN!", responseGrid[responseIndex])
+        return(rep(0, length(responseGrid[responseIndex+1])))
+        
+      } 
+    }
+    replaceValues <- is.infinite(mean)
+    mean[replaceValues] <- 3e200*sign(mean[replaceValues]) # Sometimes infinite values in the mean throw off pnorm
+    a <- pnorm(responseGrid[responseIndex+1]
           , mean=mean
           , sd=sd
           )-
@@ -68,6 +82,9 @@ discreteNorm <-
           , mean=mean
           , sd=sd
           )
+    
+    a
+    
 }
 
 
@@ -82,7 +99,6 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
     beta <- tauStimuli/tauIntegration
     beta*stimuli + (1-beta)*kappa
   }
-
   predictions = vanillaBayesPredictions(stimuli, kappa, tauStimuli, tauCategory)
   tauIntegration = tauStimuli + tauCategory
   if(mode=="prediction"){
@@ -90,14 +106,17 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
   } else if(mode=="simulation"){
       rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
   } else if(mode=="subjectiveLogLikelihood") {
-    if(tauStimuli <= 0 | tauCategory <=0){return(0)} # large value if tau's go negative
-    responseIndex <- match(responses, responseGrid)
-    responseGrid2 <- (c(-Inf, responseGrid)+c(responseGrid, Inf))/2
+    if(tauStimuli <= 0 | tauCategory <=0){# large value if tau's go negative
+      result <-rep(0, length(predictions))
+    }  else {
+      responseIndex <- match(responses, responseGrid)
+      responseGrid2 <- (c(-Inf, responseGrid)+c(responseGrid, Inf))/2
     
-    #result <- dnorm(predictions-responses, sd=1/sqrt(tauIntegration))# DNORM is not well-normalized here
-    result <- discreteNorm(predictions, sd=1/sqrt(tauIntegration), responseIndex, responseGrid2)
+      #result <- dnorm(predictions-responses, sd=1/sqrt(tauIntegration))# DNORM is not well-normalized here
+      result <- discreteNorm(predictions, sd=1/sqrt(tauIntegration), responseIndex, responseGrid2)
+     
+    }
     class(result) <- append("subjectiveLogLikelihood", class(result))
-    
     result
   }
 }
