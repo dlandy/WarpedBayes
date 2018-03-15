@@ -1,5 +1,11 @@
 # Reconstructed classical functions, using Bayesian parameterizations
 
+robustLog <- function(x, smallValue=10^-322){
+  x[x<=smallValue] <- smallValue
+  log(x)
+} 
+
+
 negSumLogs <- function(probabilities){
   return(0-sum(robustLog(probabilities)))
 }
