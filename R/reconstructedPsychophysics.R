@@ -20,7 +20,7 @@ negSumLogs <- function(probabilities){
 #' @param stimuli a vector of stimuli, between 0 and inf
 #' @param responses an optional vector of responses
 #' @param responseGrid An optional vector of possible responses
-#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "subjectiveLogLikelihood"
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @return A vector the transformed stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
@@ -42,7 +42,7 @@ uniformGuessingModel <- function(stimuli
     return(rep(responseGrid[floor(length(responseGrid)/2)], nStim))
   } else if(mode=="simulation"){
     return(sample(responseGrid, nStim, replace=TRUE))
-  } else if(mode=="likelihoodOfResponses"){
+  } else if(mode=="subjectiveLogLikelihood"){
     return(rep(1/length(responseGrid), nStim))
   }
 }
@@ -51,7 +51,7 @@ uniformGuessingModel <- function(stimuli
 #' @param stimuli a vector of stimuli, between 0 and inf
 #' @param responses an optional vector of responses
 #' @param responseGrid An optional vector of possible responses
-#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "subjectiveLogLikelihood"
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @param ... All parameters that should be passed into the main model
 #' @return A vector the transformed stimuli
@@ -66,7 +66,7 @@ guessingModel <- function(model
                           , mode = "prediction"
                           , guessRate=0
                           , ...){
-  if(mode=="likelihoodOfResponses"){
+  if(mode=="subjectiveLogLikelihood"){
     guessRate*uniformGuessingModel(stimuli=stimuli
                                    , responses=responses
                                    , responseGrid=responseGrid
@@ -106,7 +106,7 @@ guessingModel <- function(model
 #' @param fixedPars a fixed set of any parameter values you do not expect optim to optimize over
 #' @param control Passed directly into optim's control parameter
 #' @param fit If set to false, simply returns the function evaluation over the initial parameters. This is mostly useful for debugging
-#' @param optimizing What criterion should be optimized?  Current valid values are "Objective RMSE" and "Subjective Log Likelihood". Subjective log likelihood is 
+#' @param optimizing What criterion should be optimized?  Current valid values are "Objective RMSE" and "subjectiveLogLikelihood". subjectiveLogLikelihood is 
 #' currently considered to be confusing, and is not recommended for the naive user.
 #' @return A tibble that contains one row for each stimulus/response pair, and includes 
 #' several columns (see details for details)
@@ -128,14 +128,14 @@ fitWarpedBayesModel <- function(model, stimuli, responses
                 , fixedPars =NULL
                 , control=list(maxit=5000, reltol = 10e-200)
                 , fit=TRUE
-                , optimizing="Objective Log Likelihood"
+                , optimizing="subjectiveLogLikelihood"
 ){
   # Safety check parameters
-  if(!(optimizing %in% c("Objective Log Likelihood", "Subjective Log Likelihood", "Guessing Model", "likelihoodOfResponses"))){
+  if(!(optimizing %in% c("subjectiveLogLikelihood"))){
    if(is.character(optimizing)){
-     stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or Subjective Log Likelihood")
+     stop("I don't know how to optimize ", optimizing, ". Please give me either Objective RMSE or subjectiveLogLikelihood")
    } else {
-     stop("Invalid value for optimizing. Please give me either Objective RMSE or Subjective Log Likelihood")
+     stop("Invalid value for optimizing. Please give me either Objective RMSE or subjectiveLogLikelihood")
    }
   }
   if(is.null(responseGrid)){
@@ -143,11 +143,13 @@ fitWarpedBayesModel <- function(model, stimuli, responses
     responseGrid = sort(unique(responses))
   }
     fitFunction <- function(pars){
-      negSumLogs(do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), list(responses=responses, mode=optimizing, responseGrid=responseGrid))))
+      negSumLogs(do.call(model, append(append(append(list(stimuli=stimuli), pars), fixedPars), 
+                                       list(responses=responses, mode=optimizing, responseGrid=responseGrid))))
   }
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
-    simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="simulation")))
+    simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), 
+                                        list(mode="simulation")))
     meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction")))
     print(result)
     a <- tibble::tibble(
@@ -193,7 +195,7 @@ fitWarpedBayesModel <- function(model, stimuli, responses
 #' @param minValue The lowest range value (in objective units).  Should be at least as small as the smallest stimulus and response.
 #' @param maxValue The highest range value  (in objective units).  Should be at least as large as the largest stimulus and response.
 #' @param smallValue a small amount, by which to default boundary expansion
-#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "subjectiveLogLikelihood"
 #' @param responseGrid an optional vector of response structured Responses
 #' If responses are given, the return value is the logLikelihood of the responses given the parameters
 #' @return A vector the transformed stimuli
@@ -219,8 +221,10 @@ bayesianGonzalezWu <- function(stimuli
                                , mode = "prediction"
                                , responseGrid = NULL
                                ){
-  if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
-    warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
+  if(is.null(responseGrid)){
+    if(mode %in% c("subjectiveLogLikelihood")){ 
+      warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
+    }
     responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
   }
   leftBoundary  <- ifelse(is.null(leftBoundaryExpansion ), leftBoundaryObjective,   minValue -  exp(leftBoundaryExpansion ) )
@@ -270,7 +274,7 @@ bayesianStevensPowerLaw <- function(stimuli
                                     , mode ="prediction"
                                     , responseGrid = NULL
 ){
-  if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
+  if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
     responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
   }
@@ -320,7 +324,7 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
                                               , responses="prediction"
                                               , responseGrid = NULL
                                               ){
-  if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
+  if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
     responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
   }
@@ -378,7 +382,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                                          , mode = "prediction"
                                                          , responseGrid = NULL
                                                          ){
-  if(is.null(responseGrid) & mode %in% c("likelihoodOfResponses")){
+  if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
     responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
   }

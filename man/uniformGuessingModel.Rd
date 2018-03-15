@@ -14,7 +14,7 @@ uniformGuessingModel(stimuli, responses = NULL,
 
 \item{responseGrid}{An optional vector of possible responses}
 
-\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
+\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "subjectiveLogLikelihood"
 If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{

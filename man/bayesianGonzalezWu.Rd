@@ -43,7 +43,7 @@ stimulus values. Defaults to a small amount more than 1}
 
 \item{smallValue}{a small amount, by which to default boundary expansion}
 
-\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"}
+\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "subjectiveLogLikelihood"}
 
 \item{responseGrid}{an optional vector of response structured Responses
 If responses are given, the return value is the logLikelihood of the responses given the parameters}

@@ -6,7 +6,7 @@
 \usage{
 fitWarpedBayesModel(model, stimuli, responses, responseGrid = NULL,
   initialPars = NULL, fixedPars = NULL, control = list(maxit = 5000,
-  reltol = 1e-199), fit = TRUE, optimizing = "Objective Log Likelihood")
+  reltol = 1e-199), fit = TRUE, optimizing = "subjectiveLogLikelihood")
 }
 \arguments{
 \item{model}{a model that has the general layout of the "bayesian..." models included in this package.}
@@ -25,7 +25,7 @@ fitWarpedBayesModel(model, stimuli, responses, responseGrid = NULL,
 
 \item{fit}{If set to false, simply returns the function evaluation over the initial parameters. This is mostly useful for debugging}
 
-\item{optimizing}{What criterion should be optimized?  Current valid values are "Objective RMSE" and "Subjective Log Likelihood". Subjective log likelihood is 
+\item{optimizing}{What criterion should be optimized?  Current valid values are "Objective RMSE" and "subjectiveLogLikelihood". subjectiveLogLikelihood is 
 currently considered to be confusing, and is not recommended for the naive user.}
 }
 \value{

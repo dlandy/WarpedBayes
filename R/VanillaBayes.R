@@ -6,8 +6,8 @@
 #' @param kappa The location of the category
 #' @param tauStimuli The precision of the stimulus traces: may be a single number or a vector
 #' @param tauCategory The precision of the category distribution
-#' @param responses an optional vector of responses. Should only be given if mode is "likelihoodOfResponses"
-#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
+#' @param responses an optional vector of responses. Should only be given if mode is "subjectiveLogLikelihood"
+#' @param mode What aspect should the function calculate? Legel choices include "prediction", "simulation", and "subjectiveLogLikelihood"
 #' @return A vector containing mean predicted stimulus locations, or the log likelihood of the responses given the model
 #' @details This function assumes that the data are in a metric 
 #' space (-inf, inf), with a single normally distributed generating category (with mean kappa and precision tauCategory). It further assumes a set of stimuli, which are
@@ -53,7 +53,7 @@ vanillaBayes.list <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, res
   }else{
     result <- (unlist(result))
     
-    class(result) <- append("likelihoodOfResponses", class(result))
+    class(result) <- append("subjectiveLogLikelihood", class(result))
     result
   } 
 }
@@ -89,14 +89,14 @@ vanillaBayes.numeric <- function(stimuli, kappa=0, tauStimuli=1, tauCategory=1, 
     predictions
   } else if(mode=="simulation"){
       rnorm(length(predictions), mean=predictions, sd=1/sqrt(tauIntegration))
-  } else if(mode=="likelihoodOfResponses") {
+  } else if(mode=="subjectiveLogLikelihood") {
     if(tauStimuli <= 0 | tauCategory <=0){return(0)} # large value if tau's go negative
     responseIndex <- match(responses, responseGrid)
     responseGrid2 <- (c(-Inf, responseGrid)+c(responseGrid, Inf))/2
     
     #result <- dnorm(predictions-responses, sd=1/sqrt(tauIntegration))# DNORM is not well-normalized here
     result <- discreteNorm(predictions, sd=1/sqrt(tauIntegration), responseIndex, responseGrid2)
-    class(result) <- append("likelihoodOfResponses", class(result))
+    class(result) <- append("subjectiveLogLikelihood", class(result))
     
     result
   }
