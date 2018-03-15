@@ -347,7 +347,9 @@ psiLogOddsInverse.list <- function(warpedStimuli, smallValue=10^-30){
 }
 
 #' @export
-psiLogOddsInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-30){warpedStimuli}
+psiLogOddsInverse.likelihoodOfResponses <- function(warpedStimuli, smallValue=10^-30){
+  warpedStimuli
+  }
 
 #' @export
 psiLogOddsInverse.numeric <- function(warpedStimuli, smallValue=10^-30){

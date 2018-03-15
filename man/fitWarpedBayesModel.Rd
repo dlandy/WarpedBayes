@@ -4,9 +4,9 @@
 \alias{fitWarpedBayesModel}
 \title{fitWarpedBayesModel}
 \usage{
-fitWarpedBayesModel(model, stimuli, responses, initialPars = NULL,
-  fixedPars = NULL, control = list(maxit = 5000, reltol = 1e-199),
-  fit = TRUE, optimizing = "Objective Log Likelihood")
+fitWarpedBayesModel(model, stimuli, responses, responseGrid = NULL,
+  initialPars = NULL, fixedPars = NULL, control = list(maxit = 5000,
+  reltol = 1e-199), fit = TRUE, optimizing = "Objective Log Likelihood")
 }
 \arguments{
 \item{model}{a model that has the general layout of the "bayesian..." models included in this package.}
@@ -14,6 +14,8 @@ fitWarpedBayesModel(model, stimuli, responses, initialPars = NULL,
 \item{stimuli}{a vector of stimuli, in whatever raw format you like.}
 
 \item{responses}{a vector of stimuli, in whatever raw format you like.}
+
+\item{responseGrid}{a vector of possible responses, for discretizing the normal distribution}
 
 \item{initialPars}{an initial set of any parameter values you expect optim to optimize over}
 

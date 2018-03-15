@@ -6,14 +6,13 @@
 \usage{
 bayesianGonzalezWu(stimuli, kappa = psiLogOdds(multiCycle(kappaObjective,
   references = c(leftBoundaryObjective, rightBoundaryObjective))),
-  kappaObjective = 0.5, tauStimuli = 1, tauCategory = 1,
-  leftBoundaryObjective = 0 - smallValue, rightBoundaryObjective = 1 +
-  smallValue, rightBoundaryExpansion = log((rightBoundaryObjective -
-  maxValue)/(maxValue - minValue)), leftBoundaryExpansion = log((minValue -
-  leftBoundaryObjective)/(maxValue - minValue)), minValue = min(c(stimuli),
-  na.rm = T), maxValue = max(c(stimuli), na.rm = T), smallValue = 10^-10,
-  guessRate = 0, guessDensity = -1, responses = NULL,
-  mode = "prediction")
+  kappaObjective = 0.5, responses = NULL, tauStimuli = 1,
+  tauCategory = 1, leftBoundaryObjective = minValue - smallValue,
+  rightBoundaryObjective = maxValue + smallValue,
+  rightBoundaryExpansion = NULL, leftBoundaryExpansion = NULL,
+  minValue = min(c(stimuli, responses), na.rm = T),
+  maxValue = max(c(stimuli, responses), na.rm = T), smallValue = 10^-10,
+  mode = "prediction", responseGrid = sort(unique(responses)))
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
@@ -21,6 +20,8 @@ bayesianGonzalezWu(stimuli, kappa = psiLogOdds(multiCycle(kappaObjective,
 \item{kappa}{The location of the category in subjective space (from -inf to inf). Defaults to 0}
 
 \item{kappaObjective}{An alternative specification for the kappa location, situated in objective measures.}
+
+\item{responses}{an optional vector of responses}
 
 \item{tauStimuli}{The precision of the stimulus traces: may be a single number or a vector}
 
@@ -42,13 +43,9 @@ stimulus values. Defaults to a small amount more than 1}
 
 \item{smallValue}{a small amount, by which to default boundary expansion}
 
-\item{guessRate}{The presumed proportion of responses that are pure guesses}
+\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"}
 
-\item{guessDensity}{The normed probability density of any individual response in the guess model (should be 1 over the number of unique responses)}
-
-\item{responses}{an optional vector of responses}
-
-\item{mode}{What aspect should the function calculate? Legel choices include "prediction", "simulation", and "likelihoodOfResponses"
+\item{responseGrid}{an optional vector of response structured Responses
 If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{

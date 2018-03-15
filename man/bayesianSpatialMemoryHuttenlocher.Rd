@@ -7,7 +7,8 @@
 bayesianSpatialMemoryHuttenlocher(stimuli, kappaObjective = 0.5,
   kappa = psiLogOdds(kappaObjective), tauStimuli = 1, tauCategory = 1,
   boundary = 1, leftBoundary = -1 * boundary, rightBoundary = boundary,
-  center = 0, responses = "prediction")
+  center = 0, responses = "prediction",
+  responseGrid = sort(unique(responses)))
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, in public units between -inf and inf}
@@ -30,12 +31,14 @@ should not leave real data outside the boundaries}
 \item{center}{The posited (or fitted) psychological center of the screen (in public units: should be near the true center)}
 
 \item{responses}{an optional vector of responses. If responses are given, the return value is the logLikelihood of the responses given the parameters}
+
+\item{responseGrid}{an optional vector of response structured Responses}
 }
 \value{
 A vector the transformed stimuli, or the logLikelihood of them.
 }
 \description{
-A simple package that assembles the symmetric model used by Huttenlocher and colleagues analyze spatial 
+A simple package that assembles the symmetric model used by Huttenlocher and colleagues to analyze spatial 
 estimations from memory in one dimension.
 }
 \details{

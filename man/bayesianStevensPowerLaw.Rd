@@ -6,7 +6,8 @@
 \usage{
 bayesianStevensPowerLaw(stimuli, kappaObjective = 1,
   kappa = psiLog(kappaObjective), tauStimuli = 1, tauCategory = 1,
-  responses = "prediction")
+  responses = NULL, mode = "prediction",
+  responseGrid = sort(unique(responses)))
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between 0 and inf}
@@ -19,7 +20,9 @@ bayesianStevensPowerLaw(stimuli, kappaObjective = 1,
 
 \item{tauCategory}{The precision of the category distribution}
 
-\item{responses}{an optional vector of responses.
+\item{responses}{an optional vector of responses.}
+
+\item{responseGrid}{an optional vector of response structured Responses
 If responses are given, the return value is the logLikelihood of the responses given the parameters}
 }
 \value{

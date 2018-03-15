@@ -3,14 +3,15 @@ Title: Implements Design Pattern Discussed in Landy, Crawford, & Corbin
 Version: 0.0.0.9000
 Authors@R: person("David", "Landy", email = "dhlandy@gmail.com", role = c("aut", "cre"))
 Description: This package implements psychophysical transformations (and their inverses) and the normal-normal "vanilla" bayesian estimation procedure, in functions that easily chain through piping. It makes it easy to generate and fit models, while viewing them as minor variations on a general theme: transformation from bounded to unbounded spaces along with simple Bayesian logic. 
-Depends: R (>= 3.3.3)
+Depends: R (>= 3.3.1)
 License: WTFPL
 Encoding: UTF-8
 LazyData: true
 Imports:
     tidyverse,
     magrittr,
-    tibble
+    tibble,
+    logitnorm
 RoxygenNote: 6.0.1.9000
 Suggests: 
     testthat,

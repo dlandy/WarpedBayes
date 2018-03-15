@@ -5,7 +5,7 @@
 \title{vanillaBayes}
 \usage{
 vanillaBayes(stimuli, kappa = 0, tauStimuli = 1, tauCategory = 1,
-  responses = NULL, mode = "prediction")
+  responses = NULL, mode = "prediction", responseGrid = c(0))
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf}

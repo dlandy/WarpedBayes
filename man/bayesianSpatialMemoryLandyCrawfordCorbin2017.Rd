@@ -7,13 +7,12 @@
 bayesianSpatialMemoryLandyCrawfordCorbin2017(stimuli,
   kappa = psiLogOdds(multiCycle(kappaObjective, references =
   c(leftBoundaryObjective, rightBoundaryObjective))), kappaObjective = 0.5,
-  tauStimuli = 1, tauCategory = 1, leftBoundaryObjective = -1 -
-  smallValue, rightBoundaryObjective = 1 + smallValue,
-  rightBoundaryExpansion = log((rightBoundaryObjective - maxValue)/(maxValue -
-  minValue)), leftBoundaryExpansion = log((minValue -
-  leftBoundaryObjective)/(maxValue - minValue)), minValue = min(c(stimuli),
-  na.rm = T), maxValue = max(c(stimuli), na.rm = T), smallValue = 10^-10,
-  responses = NULL, center = 0, mode = "prediction")
+  tauStimuli = 1, tauCategory = 1, leftBoundaryObjective = minValue -
+  smallValue, rightBoundaryObjective = maxValue + smallValue,
+  rightBoundaryExpansion = NULL, leftBoundaryExpansion = NULL,
+  minValue = min(c(stimuli), na.rm = T), maxValue = max(c(stimuli), na.rm =
+  T), smallValue = 10^-10, responses = NULL, center = 0,
+  mode = "prediction", responseGrid = sort(unique(responses)))
 }
 \arguments{
 \item{stimuli}{a vector of stimuli, between -inf and inf}
@@ -30,6 +29,8 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017(stimuli,
 
 \item{center}{The posited (or fitted) psychological center of the screen (in public units: should be near the true center)}
 
+\item{responseGrid}{an optional vector of response structured Responses}
+
 \item{boundary}{The subject-specific location of the boundaries: may bear any relation to true stimuli, except that it 
 should not leave real data outside the boundaries}
 
@@ -41,7 +42,7 @@ should not leave real data outside the boundaries}
 A vector the transformed stimuli, or the logLikelihood of them.
 }
 \description{
-A simple package that assembles the symmetric model used by Huttenlocher and colleagues analyze spatial 
+A simple package that assembles the symmetric model used by Landy, Crawford, and Corbin, 2017 to analyze spatial 
 estimations from memory in one dimension
 }
 \examples{
