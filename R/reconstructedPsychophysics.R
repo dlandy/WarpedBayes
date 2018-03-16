@@ -30,16 +30,22 @@ negSumLogs <- function(probabilities){
 
 uniformGuessingModel <- function(stimuli
                                  , responses=NULL
-                                 , responseGrid = sort(unique(responses))
+                                 , responseGrid = NULL
                                  , mode = "prediction"
 ){
   nStim <- length(stimuli)
   if(is.null(responseGrid)){
+
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
-    responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
+    responseGrid <- unlist(ifelse(is.null(responses)
+                           , ifelse(is.null(stimuli), list(c(0)), list(sort(unique(stimuli))))
+                           , list(sort(unique(responses)))
+    )
+                           
+    )
   }
   if(mode=="prediction"){
-    return(rep(responseGrid[floor(length(responseGrid)/2)], nStim))
+    return(rep(median(responseGrid), nStim))
   } else if(mode=="simulation"){
     return(sample(responseGrid, nStim, replace=TRUE))
   } else if(mode=="subjectiveLogLikelihood"){
@@ -48,6 +54,11 @@ uniformGuessingModel <- function(stimuli
 }
 
 #' guessingModel
+#' 
+#' This function takes a model, and returns a version of that model that incorporates uniform guessing at some 'guessRate'.
+#' It is very important to give guessing models a responseGrid parameter (otherwise, they don't know how to distribute guess probabilities!).
+#' Otherwise, these models can be used essentially in the same ways as normal models
+#' 
 #' @param stimuli a vector of stimuli, between 0 and inf
 #' @param responses an optional vector of responses
 #' @param responseGrid An optional vector of possible responses
@@ -58,15 +69,36 @@ uniformGuessingModel <- function(stimuli
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
 #' @examples
-#' uniformGuessingModel(1:100/100)
-guessingModel <- function(model
-                          , stimuli=NULL
+#' (guessingModel(bayesianGonzalezWu))(1:9/10, mode="prediction", guessRate=0.5,  responseGrid=1:9/10)
+#' a <- with(boundedProportionWithGuessingSimulatedData,
+#' fitWarpedBayesModel(guessingModel(bayesianGonzalezWu), 
+#'                     stimulus
+#'                     ,  response
+#'                     , initialPars = c(guessRate = 0, kappa=1, tauStimuli=10, tauCategory=10, leftBoundaryExpansion=-1, rightBoundaryExpansion=-1)
+#'                     , responseGrid = sort(unique(response))
+#'                     , fixedPars=c() ))
+guessingModel <- function(model){
+  function(
+                           stimuli=NULL
                           , responses=NULL
                           , responseGrid = sort(unique(responses))
                           , mode = "prediction"
                           , guessRate=0
                           , ...){
-  if(mode=="subjectiveLogLikelihood"){
+    if(mode=="simulation"){
+      guess <- uniformGuessingModel(stimuli=stimuli
+                                    , responses=responses
+                                    , responseGrid=responseGrid
+                                    , mode=mode)
+      nonGuess <- model(stimuli=stimuli
+                        , responses=responses
+                        , responseGrid=responseGrid
+                        , mode=mode, ...)
+      pick <- rbinom(length(stimuli), 1,guessRate)
+      return(pick*guess+(1-pick)*nonGuess)
+      
+      
+    } else if(mode=="subjectiveLogLikelihood" | mode=="prediction" | TRUE){ #Secretly a catch-all
     guessRate*uniformGuessingModel(stimuli=stimuli
                                    , responses=responses
                                    , responseGrid=responseGrid
@@ -75,22 +107,10 @@ guessingModel <- function(model
                         , responses=responses
                         , responseGrid=responseGrid
                         , mode=mode, ...)
-  } else if(mode=="simulation"){
-    guess <- uniformGuessingModel(stimuli=stimuli
-                                  , responses=responses
-                                  , responseGrid=responseGrid
-                                  , mode=mode)
-    nonGuess <- model(stimuli=stimuli
-          , responses=responses
-          , responseGrid=responseGrid
-          , mode=mode, ...)
-    pick <- rbinom(length(stimuli), 1,guessRate)
-    return(pick*guess+(1-pick)*nonGuess)
-    
     
   }
     
-  
+}
 }
 
 
@@ -117,10 +137,12 @@ guessingModel <- function(model
 #' @seealso bayesianHuttenlocherSpatialMemory
 #' @export
 #' @examples
-#' a <- fitWarpedBayesModel(bayesianGonzalezWu, 
-#'                          1:1000/1000, 
-#'                          bayesianGonzalezWu(1:1000/1000, mode="simulation"), 
-#'                          initialPars = c(kappa=1, tauStimuli=100, tauCategory=10))
+#' fitWarpedBayesModel(bayesianSpatialMemoryLandyCrawfordCorbin2017, 
+#'                     stimulus
+#'                     ,  response
+#'                     , initialPars = c(kappa=1, tauStimuli=10, tauCategory=10, leftBoundaryExpansion=-1, rightBoundaryExpansion=-1)
+#'                     , responseGrid = sort(unique(response))
+#'                     , fixedPars=c() ))
 
 fitWarpedBayesModel <- function(model, stimuli, responses
                 , responseGrid = NULL
@@ -151,8 +173,8 @@ fitWarpedBayesModel <- function(model, stimuli, responses
   if(fit){
     result <- stats::optim(initialPars, fitFunction, control=control, method=c("Nelder-Mead") )
     simulation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), 
-                                        list(mode="simulation")))
-    meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction")))
+                                        list(mode="simulation", responseGrid=responseGrid)))
+    meanExpectation <- do.call(model, append(append(append(list(stimuli=stimuli), result$par), fixedPars), list(mode="prediction", responseGrid=responseGrid)))
     #print(result)
     a <- tibble::tibble(
       stimulus = stimuli
@@ -227,7 +249,7 @@ bayesianGonzalezWu <- function(stimuli
     if(mode %in% c("subjectiveLogLikelihood")){ 
       warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
     }
-    responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
+    responseGrid <- unlist( ifelse(is.null(responses), list(c(0)), list(sort(unique(responses)))))
   }
   leftBoundary  <- ifelse(is.null(leftBoundaryExpansion ), leftBoundaryObjective,   minValue -  exp(leftBoundaryExpansion ) )
   rightBoundary <- ifelse(is.null(rightBoundaryExpansion), rightBoundaryObjective,  maxValue +  exp(rightBoundaryExpansion) )
@@ -278,7 +300,7 @@ bayesianStevensPowerLaw <- function(stimuli
 ){
   if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
-    responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
+    responseGrid <- unlist( ifelse(is.null(responses), list(c(0)), list(sort(unique(responses)))))
   }
 
     stimuli %>% psiLog %>% vanillaBayes(kappa=kappa
@@ -329,7 +351,7 @@ bayesianSpatialMemoryHuttenlocher <- function(stimuli
                                               ){
   if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
-    responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
+    responseGrid <- unlist( ifelse(is.null(responses), list(c(0)), list(sort(unique(responses)))))
   }
   refs <- c(leftBoundary, center, rightBoundary)
   stimuli %>% multiCycle(references = refs) %>%
@@ -388,7 +410,7 @@ bayesianSpatialMemoryLandyCrawfordCorbin2017 <- function(stimuli
                                                          ){
   if(is.null(responseGrid) & mode %in% c("subjectiveLogLikelihood")){
     warning("You didn't give me a grid of responses. I made one up, but that's probably not very safe.")
-    responseGrid <- ifelse(is.null(responses), c(0), sort(unique(responses)))
+    responseGrid <- unlist( ifelse(is.null(responses), list(c(0)), list(sort(unique(responses)))))
   }
   leftBoundary  <- ifelse(is.null(leftBoundaryExpansion ), leftBoundaryObjective,   minValue -  exp(leftBoundaryExpansion ) )
   rightBoundary <- ifelse(is.null(rightBoundaryExpansion), rightBoundaryObjective,  maxValue +  exp(rightBoundaryExpansion) )
